@@ -1,12 +1,13 @@
 using CleanArchitecture.Application;
+using CleanArchitecture.Infrastructure;
 using CleanArchitecture.WebUI.Server.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents();
-
 builder.Services.AddApplication();
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
