@@ -1,8 +1,9 @@
-﻿namespace CleanArchitecture.Domain.Articles
+﻿using CleanArchitecture.Domain.Abstractions;
+
+namespace CleanArchitecture.Domain.Articles
 {
-    public class Article
+    public class Article : Entity
     {
-        public int Id { get; set; }
         public required string Title { get; set; }
         public string? Content { get; set; }
         public DateTime DatePublished { get; set; } = DateTime.Now;
