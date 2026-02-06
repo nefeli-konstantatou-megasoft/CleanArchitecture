@@ -2,6 +2,7 @@
   <Folder Name="/src/">
     <Project Path="CleanArchitecture.Application/CleanArchitecture.Application.csproj" />
     <Project Path="CleanArchitecture.Domain/CleanArchitecture.Domain.csproj" />
+    <Project Path="CleanArchitecture.Infrastructure/CleanArchitecture.Infrastructure.csproj" Id="0b487986-5c61-4984-8978-8960ef25e5c9" />
     <Project Path="CleanArchitecture.WebUI.Server/CleanArchitecture.WebUI.Server.csproj" />
   </Folder>
 </Solution>
