@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="CleanArchitecture.WebUI.Server/CleanArchitecture.WebUI.Server.csproj" />
+  </Folder>
+</Solution>
