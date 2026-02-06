@@ -1,5 +1,7 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="CleanArchitecture.Application/CleanArchitecture.Application.csproj" />
+    <Project Path="CleanArchitecture.Domain/CleanArchitecture.Domain.csproj" />
     <Project Path="CleanArchitecture.WebUI.Server/CleanArchitecture.WebUI.Server.csproj" />
   </Folder>
 </Solution>
