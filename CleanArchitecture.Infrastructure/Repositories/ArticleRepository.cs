@@ -29,7 +29,8 @@ namespace CleanArchitecture.Infrastructure.Repositories
         public async Task<Article?> UpdateArticleAsync(Article article)
         {
             var articleToUpdate = await GetArticleByIdAsync(article.Id);
-            if (articleToUpdate is null) return null;
+            if (articleToUpdate is null)
+                return null;
 
             articleToUpdate.Title = article.Title;
             articleToUpdate.Content = article.Content;
@@ -39,6 +40,17 @@ namespace CleanArchitecture.Infrastructure.Repositories
 
             await _context.SaveChangesAsync();
             return articleToUpdate;
+        }
+        public async Task<bool> DeleteArticleByIdAsync(int id)
+        {
+            var article = await GetArticleByIdAsync(id);
+            if (article is null)
+                return false;
+
+            _context.Articles.Remove(article);
+            await _context.SaveChangesAsync();
+            
+            return true;
         }
     }
 }

@@ -24,6 +24,11 @@ else
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </EditForm>
+
+    <form @formname="ArticleDeleteForm" @onsubmit="DeleteArticle" method="post">
+        <button class="btn btn-danger">Delete Article</button>
+        <AntiforgeryToken />
+    </form>
 }
 
 @code {
@@ -64,5 +69,17 @@ else
             var result = await Sender.Send(command);
             NavigationManager.NavigateTo($"/articles/edit/{result.Id}");
         }
+    }
+
+    private async Task DeleteArticle()
+    {
+        if (ArticleId is null)
+            return;
+
+        var command = new DeleteArticleByIdCommand((int)ArticleId);
+        var success = await Sender.Send(command);
+
+        if (success)
+            NavigationManager.NavigateTo("/articles");
     }
 }
