@@ -21,5 +21,24 @@ namespace CleanArchitecture.Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return article;
         }
+        public async Task<Article?> GetArticleByIdAsync(int id)
+        {
+            var article = await _context.Articles.FindAsync(id);
+            return article;
+        }
+        public async Task<Article?> UpdateArticleAsync(Article article)
+        {
+            var articleToUpdate = await GetArticleByIdAsync(article.Id);
+            if (articleToUpdate is null) return null;
+
+            articleToUpdate.Title = article.Title;
+            articleToUpdate.Content = article.Content;
+            articleToUpdate.DatePublished = article.DatePublished;
+            articleToUpdate.IsPublished = article.IsPublished;
+            articleToUpdate.DateUpdated = DateTime.Now;
+
+            await _context.SaveChangesAsync();
+            return articleToUpdate;
+        }
     }
 }
