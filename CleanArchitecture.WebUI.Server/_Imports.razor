@@ -7,10 +7,12 @@
 @using Microsoft.AspNetCore.Components.Web.Virtualization
 @using Microsoft.JSInterop
 @using CleanArchitecture.WebUI.Server
-@using CleanArchitecture.WebUI.Server.Components
-@using CleanArchitecture.WebUI.Server.Components.Layout
+@using CleanArchitecture.WebUI.Server.Shared;
 @using CleanArchitecture.Domain.Articles
 @using CleanArchitecture.Application.Articles
 @using System.Threading.Tasks
 @using MediatR
 @using CleanArchitecture.Application.Articles.GetArticles
+@using CleanArchitecture.Application.Articles.CreateArticle
+@using Mapster
+@inject ISender Sender

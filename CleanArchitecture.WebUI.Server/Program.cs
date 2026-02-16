@@ -1,6 +1,6 @@
 using CleanArchitecture.Application;
 using CleanArchitecture.Infrastructure;
-using CleanArchitecture.WebUI.Server.Components;
+using CleanArchitecture.WebUI.Server;
 
 var builder = WebApplication.CreateBuilder(args);
 

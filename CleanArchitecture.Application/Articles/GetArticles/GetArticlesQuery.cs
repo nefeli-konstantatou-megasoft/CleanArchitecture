@@ -1,9 +1,8 @@
-﻿using CleanArchitecture.Domain.Articles;
-using MediatR;
+﻿using MediatR;
 
 namespace CleanArchitecture.Application.Articles.GetArticles
 {
-    public class GetArticlesQuery : IRequest<List<Article>>
+    public class GetArticlesQuery : IRequest<List<ArticleResponse>>
     {
     }
 }
