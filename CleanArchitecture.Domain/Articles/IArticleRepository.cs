@@ -1,11 +1,10 @@
-﻿namespace CleanArchitecture.Domain.Articles
+﻿namespace CleanArchitecture.Domain.Articles;
+
+public interface IArticleRepository
 {
-    public interface IArticleRepository
-    {
-        Task<List<Article>> GetAllArticlesAsync();
-        Task<Article> CreateArticleAsync(Article article);
-        Task<Article?> GetArticleByIdAsync(int id);
-        Task<Article?> UpdateArticleAsync(Article article);
-        Task<bool> DeleteArticleByIdAsync(int id);
-    }
+    Task<List<Article>> GetAllArticlesAsync();
+    Task<Article> CreateArticleAsync(Article article);
+    Task<Article?> GetArticleByIdAsync(int id);
+    Task<Article?> UpdateArticleAsync(Article article);
+    Task<bool> DeleteArticleByIdAsync(int id);
 }

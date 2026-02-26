@@ -1,9 +1,6 @@
-﻿using MediatR;
+﻿namespace CleanArchitecture.Application.Articles.DeleteArticleById;
 
-namespace CleanArchitecture.Application.Articles.DeleteArticle
+public class DeleteArticleByIdCommand(int id) : ICommand
 {
-    public class DeleteArticleByIdCommand(int id) : IRequest<bool>
-    {
-        public int Id { get; set; } = id;
-    }
+    public int Id { get; set; } = id;
 }

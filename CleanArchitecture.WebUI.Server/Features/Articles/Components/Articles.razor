@@ -27,7 +27,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         var result = await Sender.Send(new GetArticlesQuery());
-        if (result is not null)
-            articles = result;
+        if (result.Success)
+            articles = result.Value!;
     }
 }

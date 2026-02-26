@@ -1,8 +1,5 @@
-﻿using MediatR;
+﻿namespace CleanArchitecture.Application.Articles.GetArticles;
 
-namespace CleanArchitecture.Application.Articles.GetArticles
+public class GetArticlesQuery : IQuery<List<ArticleResponse>>
 {
-    public class GetArticlesQuery : IRequest<List<ArticleResponse>>
-    {
-    }
 }

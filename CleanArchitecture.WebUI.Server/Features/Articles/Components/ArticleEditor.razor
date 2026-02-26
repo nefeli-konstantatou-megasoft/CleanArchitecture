@@ -45,9 +45,9 @@ else
         if (ArticleId is not null)
         {
             var result = await Sender.Send(new GetArticleByIdQuery((int)ArticleId));
-            if (result is not null)
+            if (result.Success)
             {
-                Article ??= result.Adapt<ArticleModel>();
+                Article ??= result.Value!.Adapt<ArticleModel>();
                 Article.Id = (int)ArticleId;
             }
         }
@@ -60,14 +60,14 @@ else
         {
             var command = Article.Adapt<UpdateArticleCommand>();
             var result = await Sender.Send(command);
-            if (result is not null)
-                Article = result.Adapt<ArticleModel>();
+            if (result.Success)
+                Article = result.Value!.Adapt<ArticleModel>();
         }
         else
         {
             var command = Article.Adapt<CreateArticleCommand>();
             var result = await Sender.Send(command);
-            NavigationManager.NavigateTo($"/articles/edit/{result.Id}");
+            NavigationManager.NavigateTo($"/articles/edit/{result.Value.Id}");
         }
     }
 
@@ -77,9 +77,9 @@ else
             return;
 
         var command = new DeleteArticleByIdCommand((int)ArticleId);
-        var success = await Sender.Send(command);
+        var deleteAttempt = await Sender.Send(command);
 
-        if (success)
+        if (deleteAttempt.Success)
             NavigationManager.NavigateTo("/articles");
     }
 }

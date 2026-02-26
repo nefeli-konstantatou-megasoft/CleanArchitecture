@@ -1,19 +1,16 @@
-﻿using CleanArchitecture.Domain.Articles;
-using MediatR;
+﻿namespace CleanArchitecture.Application.Articles.DeleteArticleById;
 
-namespace CleanArchitecture.Application.Articles.DeleteArticle
+public class DeleteArticleByIdCommandHandler : ICommandHandler<DeleteArticleByIdCommand>
 {
-    public class DeleteArticleByIdCommandHandler : IRequestHandler<DeleteArticleByIdCommand, bool>
+    private readonly IArticleRepository _articleRepository;
+    public DeleteArticleByIdCommandHandler(IArticleRepository articleRepository)
     {
-        private readonly IArticleRepository _articleRepository;
-        public DeleteArticleByIdCommandHandler(IArticleRepository articleRepository)
-        {
-            _articleRepository = articleRepository;
-        }
+        _articleRepository = articleRepository;
+    }
 
-        public async Task<bool> Handle(DeleteArticleByIdCommand request, CancellationToken cancellationToken)
-        {
-            return await _articleRepository.DeleteArticleByIdAsync(request.Id);
-        }
+    public async Task<Result> Handle(DeleteArticleByIdCommand request, CancellationToken cancellationToken)
+    {
+        bool success = await _articleRepository.DeleteArticleByIdAsync(request.Id);
+        return success ? Result.Ok() : Result.Error(ArticleErrors.ArticleNotFound);
     }
 }

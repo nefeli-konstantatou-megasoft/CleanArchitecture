@@ -1,22 +1,19 @@
-﻿using CleanArchitecture.Domain.Articles;
-using Mapster;
-using MediatR;
+﻿namespace CleanArchitecture.Application.Articles.GetArticleById;
 
-namespace CleanArchitecture.Application.Articles.GetArticleById
+public class GetArticleByIdQueryHandler : IQueryHandler<GetArticleByIdQuery, ArticleResponse?>
 {
-    public class GetArticleByIdQueryHandler : IRequestHandler<GetArticleByIdQuery, ArticleResponse?>
+    private readonly IArticleRepository _articleRepository;
+
+    public GetArticleByIdQueryHandler(IArticleRepository articleRepository)
     {
-        private readonly IArticleRepository _articleRepository;
+        _articleRepository = articleRepository;
+    }
 
-        public GetArticleByIdQueryHandler(IArticleRepository articleRepository)
-        {
-            _articleRepository = articleRepository;
-        }
-
-        public async Task<ArticleResponse?> Handle(GetArticleByIdQuery request, CancellationToken cancellationToken)
-        {
-            var result = await _articleRepository.GetArticleByIdAsync(request.Id);
-            return result?.Adapt<ArticleResponse>();
-        }
+    public async Task<Result<ArticleResponse?>> Handle(GetArticleByIdQuery request, CancellationToken cancellationToken)
+    {
+        var result = await _articleRepository.GetArticleByIdAsync(request.Id);
+        return result is null
+            ? Result<ArticleResponse?>.Error(ArticleErrors.ArticleNotFound)
+            : result.Adapt<ArticleResponse>();
     }
 }

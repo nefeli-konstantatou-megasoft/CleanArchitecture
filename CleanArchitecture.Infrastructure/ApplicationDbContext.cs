@@ -1,14 +1,13 @@
 ﻿using CleanArchitecture.Domain.Articles;
 using Microsoft.EntityFrameworkCore;
 
-namespace CleanArchitecture.Infrastructure
-{
-    public class ApplicationDbContext : DbContext
-    {
-        public ApplicationDbContext(DbContextOptions options) : base(options)
-        {
-        }
+namespace CleanArchitecture.Infrastructure;
 
-        public DbSet<Article> Articles { get; set; }
+public class ApplicationDbContext : DbContext
+{
+    public ApplicationDbContext(DbContextOptions options) : base(options)
+    {
     }
+
+    public DbSet<Article> Articles { get; set; }
 }
