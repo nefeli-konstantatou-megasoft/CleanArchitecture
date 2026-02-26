@@ -31,8 +31,11 @@ else
     </form>
 }
 
+<span class="text-danger">@errorMessage</span>
+
 @code {
     private bool isEdit => ArticleId is not null;
+    private string errorMessage = string.Empty;
 
     [Parameter]
     public int? ArticleId { get; set; }
@@ -50,9 +53,13 @@ else
                 Article ??= result.Value!.Adapt<ArticleModel>();
                 Article.Id = (int)ArticleId;
             }
+            else UpdateErrorMessage(result.Message);
         }
         else Article ??= new();
     }
+
+    private void UpdateErrorMessage(ErrorMessage? message)
+        => errorMessage = message is not null ? $"Got error code {message.Code}: `{message.Body}`" : string.Empty;
 
     private async Task HandleSubmit()
     {
@@ -61,13 +68,16 @@ else
             var command = Article.Adapt<UpdateArticleCommand>();
             var result = await Sender.Send(command);
             if (result.Success)
-                Article = result.Value!.Adapt<ArticleModel>();
+                Article = result.Value.Adapt<ArticleModel>();
+            else UpdateErrorMessage(result.Message);
         }
         else
         {
             var command = Article.Adapt<CreateArticleCommand>();
             var result = await Sender.Send(command);
-            NavigationManager.NavigateTo($"/articles/edit/{result.Value.Id}");
+            if (result.Success)
+                NavigationManager.NavigateTo($"/articles/edit/{result.Value.Id}");
+            else UpdateErrorMessage(result.Message);
         }
     }
 

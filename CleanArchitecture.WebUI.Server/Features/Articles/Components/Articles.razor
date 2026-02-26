@@ -6,9 +6,13 @@
 
 <a href="/articles/edit" class="btn btn-primary">Create new article</a>
 
-@if (articles.Count == 0)
+@if (articles is null)
 {
     <p><em>Loading...</em></p>
+}
+else if(articles.Count <= 0)
+{
+    <p><em>No articles were found.</em></p>
 }
 else
 {
@@ -22,12 +26,11 @@ else
 }
 
 @code {
-    private List<ArticleResponse> articles = [];
+    private List<ArticleResponse>? articles;
 
     protected override async Task OnInitializedAsync()
     {
         var result = await Sender.Send(new GetArticlesQuery());
-        if (result.Success)
-            articles = result.Value!;
+        articles = result.Success ? result.Value : [];
     }
 }
