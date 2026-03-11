@@ -1,5 +1,6 @@
 ﻿@page "/articles/edit"
 @page "/articles/edit/{ArticleId:int}"
+@attribute [Authorize]
 
 @if(isEdit && Article is not null)
 {

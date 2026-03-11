@@ -10,7 +10,7 @@
     </div>
     <div class="form-box">
       <label for="password">Password</label>
-      <InputText @bind-Value="UserModel.Password" id="password" />
+      <InputText @bind-Value="UserModel.Password" id="password" type="password" />
       <ValidationMessage For="() => UserModel.Password" />
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
