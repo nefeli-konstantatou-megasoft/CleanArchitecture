@@ -2,6 +2,6 @@
 
 public class LoginUserCommand(string username, string password) : ICommand
 {
-    public required string UserName { get; set; } = username;
-    public required string Password { get; set; } = password;
+    public string UserName { get; set; } = username;
+    public string Password { get; set; } = password;
 }

@@ -1,0 +1,70 @@
+﻿@page "/register"
+@using CleanArchitecture.Application.User.RegisterUser
+
+<style>
+    .form-box {
+        margin-bottom: 1rem;
+    }
+
+    .form-box label {
+        font-weight: 600;
+    }
+</style>
+
+<PageTitle>Register</PageTitle>
+
+<h3>Create new user</h3>
+
+<EditForm Model="UserModel" OnValidSubmit="HandleSubmit" FormName="RegisterUserForm">
+    <DataAnnotationsValidator />
+    <div>
+      <label for="name">Username</label>
+      <InputText @bind-Value="UserModel.UserName" id="name" />
+      <ValidationMessage For="() => UserModel.UserName" />
+    </div>
+    <div>
+      <label for="email">Email</label>
+      <InputText @bind-Value="UserModel.Email" id="email" />
+      <ValidationMessage For="() => UserModel.Email" />
+    </div>
+    <div>
+      <label for="password">Password</label>
+      <InputText @bind-Value="UserModel.Password" id="password" type="password" />
+      <ValidationMessage For="() => UserModel.Password" />
+    </div>
+    <div>
+      <label for="confirmPassword">Confirm Password</label>
+      <InputText @bind-Value="UserModel.ConfirmPassword" id="confirmPassword" type="password" />
+      <ValidationMessage For="() => UserModel.ConfirmPassword" />
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+<span class="text-danger">@errors</span>
+
+@code {
+    [SupplyParameterFromForm]
+    private RegisterUserModel UserModel { get; set; } = new();
+    private string errors = string.Empty;
+
+    async Task HandleSubmit()
+    {
+        if(UserModel.Password != UserModel.ConfirmPassword)
+        {
+            errors = "Passwords do not match";
+            return;
+        }
+
+        var command = new RegisterUserCommand(UserModel.UserName, UserModel.Email, UserModel.Password);
+        var result = await Sender.Send(command);
+
+        if(result.Success)
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+        else
+        {
+            errors = result.Message?.Body ?? "Registration failed";
+        }
+    }
+}

@@ -1,0 +1,34 @@
+﻿@page "/login"
+@using CleanArchitecture.Application.User.LoginUser
+
+<EditForm Model="UserModel" OnValidSubmit="HandleSubmit" FormName="LoginUserForm">
+    <DataAnnotationsValidator />
+    <div class="form-box">
+      <label for="name">Username</label>
+      <InputText @bind-Value="UserModel.UserName" id="name" />
+      <ValidationMessage For="() => UserModel.UserName" />
+    </div>
+    <div class="form-box">
+      <label for="password">Password</label>
+      <InputText @bind-Value="UserModel.Password" id="password" />
+      <ValidationMessage For="() => UserModel.Password" />
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+@code {
+    [SupplyParameterFromForm]
+    private LoginUserModel UserModel { get; set; } = new();
+    private string errors = string.Empty;
+
+    async Task HandleSubmit()
+    {
+        var command = new LoginUserCommand(UserModel.UserName, UserModel.Password);
+        var result = await Sender.Send(command);
+
+        if (result.Success)
+            NavigationManager.NavigateTo("/");
+        else
+            errors = result.Message?.Body ?? "Login failed";
+    }
+}
