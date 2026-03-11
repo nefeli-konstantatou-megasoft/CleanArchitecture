@@ -1,0 +1,11 @@
+﻿@page "/logout"
+@using CleanArchitecture.Infrastructure.Authentication
+@using Microsoft.AspNetCore.Identity
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await SignInManager.SignOutAsync();
+        NavigationManager.NavigateTo("/");
+    }
+}

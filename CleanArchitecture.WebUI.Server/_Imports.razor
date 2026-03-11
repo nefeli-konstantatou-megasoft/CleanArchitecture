@@ -1,10 +1,12 @@
 ﻿@using System.Net.Http
 @using System.Net.Http.Json
+@using CleanArchitecture.Infrastructure.Authentication
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
 @using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.AspNetCore.Identity
 @using Microsoft.JSInterop
 @using CleanArchitecture.WebUI.Server
 @using CleanArchitecture.WebUI.Server.Shared;
@@ -20,5 +22,7 @@
 @using CleanArchitecture.Application.Articles.DeleteArticleById
 @using CleanArchitecture.Domain.Abstractions
 @using Microsoft.AspNetCore.Components.Authorization;
+@using Microsoft.AspNetCore.Authorization
 @inject ISender Sender
 @inject NavigationManager NavigationManager;
+@inject SignInManager<User> SignInManager;
