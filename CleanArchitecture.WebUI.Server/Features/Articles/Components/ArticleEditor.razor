@@ -16,10 +16,19 @@ else
 @if(Article is not null)
 {
     <EditForm Model="Article" OnSubmit="HandleSubmit" FormName="ArticleEditForm">
-        <InputText class="form-control" @bind-Value="Article.Title" />
-        <InputTextArea class="form-control" @bind-Value="Article.Content" />
-        <InputDate class="form-control" @bind-Value="Article.DatePublished" />
-        <div class="form-check">
+        <div class="mb-2">
+            <label for="title">Title</label>
+            <InputText id="title" class="form-control" @bind-Value="Article.Title" />
+        </div>
+        <div class="mb-2">
+            <label for="content">Content</label>
+            <InputTextArea id="content" class="form-control" @bind-Value="Article.Content" />
+        </div>
+        <div class="mb-2">
+            <label for="date-published">Date</label>
+            <InputDate Type="InputDateType.DateTimeLocal" id="date-published" class="form-control" @bind-Value="Article.DatePublished" />
+        </div>
+        <div class="form-check mb-2">
             <InputCheckbox class="form-check-input" @bind-Value="Article.IsPublished" />
             <label class="form-check-label">Is Published</label>
         </div>
@@ -43,6 +52,9 @@ else
 
     [SupplyParameterFromForm]
     private ArticleModel? Article { get; set; }
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = null;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -75,6 +87,7 @@ else
         else
         {
             var command = Article.Adapt<CreateArticleCommand>();
+            command.UserId = UserManager.GetUserId(HttpContext.User);
             var result = await Sender.Send(command);
             if (result.Success)
                 NavigationManager.NavigateTo($"/articles/edit/{result.Value.Id}");

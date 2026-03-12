@@ -28,9 +28,10 @@ else
         <div style="padding: 1rem; margin-block: 1rem; border: 1px solid black">
             <h4>@article.Title</h4>
             <p>@article.Content</p>
-            <small>@article.DatePublished</small>
+            <small>@article.DatePublished by @article.UserName</small>
+            <br />
             <AuthorizeView>
-                <a href="/articles/edit/@article.Id">Edit</a>
+                <a href="/articles/edit/@article.Id" class="btn btn-primary">Edit</a>
             </AuthorizeView>
         </div>
     }

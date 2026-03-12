@@ -1,5 +1,6 @@
 ﻿using CleanArchitecture.Application.Authentication;
 using CleanArchitecture.Domain.Articles;
+using CleanArchitecture.Domain.Users;
 using CleanArchitecture.Infrastructure.Authentication;
 using CleanArchitecture.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -22,7 +23,10 @@ public static class DependencyInjection
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
         );
         AddAuthentication(services);
+
         services.AddScoped<IArticleRepository, ArticleRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+
         return services;
     }
 

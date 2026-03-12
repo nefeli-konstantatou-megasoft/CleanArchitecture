@@ -1,16 +1,34 @@
-﻿namespace CleanArchitecture.Application.Articles.GetArticles;
+﻿using CleanArchitecture.Domain.Users;
 
-public class GetArticlesQueryHandler : IQueryHandler<GetArticlesQuery, List<ArticleResponse>>
+namespace CleanArchitecture.Application.Articles.GetArticles;
+
+public class GetArticlesQueryHandler(
+    IArticleRepository articleRepository,
+    IUserRepository userRepository) : IQueryHandler<GetArticlesQuery, List<ArticleResponse>>
 {
-    private readonly IArticleRepository _articleRepository;
-    public GetArticlesQueryHandler(IArticleRepository articleRepository)
-    {
-        _articleRepository = articleRepository;
-    }
+    private readonly IArticleRepository _articleRepository = articleRepository;
+    private readonly IUserRepository _userRepository = userRepository;
 
     public async Task<Result<List<ArticleResponse>>> Handle(GetArticlesQuery request, CancellationToken cancellationToken)
     {
         var articles = await _articleRepository.GetAllArticlesAsync();
-        return articles.Adapt<List<ArticleResponse>>();
+        List<ArticleResponse> response = [];
+
+        foreach (var article in articles)
+        {
+            var articleResponse = article.Adapt<ArticleResponse>();
+            if(article.UserId is not null)
+            {
+                var author = await _userRepository.GetUserByIdAsync(article.UserId);
+                articleResponse.UserName = author?.UserName ?? "Unknown";
+            }
+            else
+            {
+                articleResponse.UserName = "Unknown";
+            }
+            response.Add(articleResponse);
+        }
+
+        return response.OrderByDescending(article => article.DatePublished).ToList();
     }
 }
