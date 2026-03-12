@@ -4,12 +4,20 @@
 <PageTitle>Articles</PageTitle>
 <h3>Articles</h3>
 
-<AuthorizeView>
+<AuthorizeView Roles="Admin, Writer">
     <Authorized>
         <a href="/articles/edit" class="btn btn-primary">Create new article</a>
     </Authorized>
     <NotAuthorized>
-        <span class="text-sm">Log in to create a new article.</span>
+        <AuthorizeView Context="NestedAuthorizedView">
+            <Authorized>
+                <span>You do not have permissions to create a new article.</span>
+            </Authorized>
+            <NotAuthorized>
+                <span class="text-sm">Log in to create a new article.</span>
+            </NotAuthorized>
+        </AuthorizeView>
+
     </NotAuthorized>
 </AuthorizeView>
 
