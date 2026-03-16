@@ -30,6 +30,10 @@ public class AuthenticationService : IAuthenticationService
         };
 
         var creationResult = await _userManager.CreateAsync(user, password);
+
+        if(creationResult.Succeeded)
+            await _userManager.AddToRoleAsync(user, "Reader");
+
         var response = new RegisterUserResponse
         {
             Succeeded = creationResult.Succeeded,
