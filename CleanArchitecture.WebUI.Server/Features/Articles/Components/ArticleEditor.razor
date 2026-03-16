@@ -7,6 +7,11 @@
     <PageTitle>Edit Article "@Article.Title"</PageTitle>
     <h3>Edit Article</h3>
 }
+else if(!string.IsNullOrEmpty(errorMessage))
+{
+    <PageTitle>Error</PageTitle>
+    <h3>Error</h3>
+}
 else
 {
     <PageTitle>New Article</PageTitle>
@@ -15,7 +20,7 @@ else
 
 @if(Article is not null)
 {
-    <EditForm Model="Article" OnSubmit="HandleSubmit" FormName="ArticleEditForm">
+    <EditForm Model="Article" OnSubmit="HandleSubmit" FormName="ArticleEditForm" class="mb-5">
         <div class="mb-2">
             <label for="title">Title</label>
             <InputText id="title" class="form-control" @bind-Value="Article.Title" />
@@ -35,6 +40,7 @@ else
         <button type="submit" class="btn btn-primary">Submit</button>
     </EditForm>
 
+    <h3>State Management</h3>
     <form @formname="ArticleDeleteForm" @onsubmit="DeleteArticle" method="post">
         <button class="btn btn-danger">Delete Article</button>
         <AntiforgeryToken />
@@ -60,7 +66,7 @@ else
     {
         if (ArticleId is not null)
         {
-            var result = await Sender.Send(new GetArticleByIdQuery((int)ArticleId));
+            var result = await Sender.Send(new GetArticleByIdForEditingQuery((int)ArticleId));
             if (result.Success)
             {
                 Article ??= result.Value!.Adapt<ArticleModel>();
@@ -87,7 +93,6 @@ else
         else
         {
             var command = Article.Adapt<CreateArticleCommand>();
-            command.UserId = UserManager.GetUserId(HttpContext.User);
             var result = await Sender.Send(command);
             if (result.Success)
                 NavigationManager.NavigateTo($"/articles/edit/{result.Value.Id}");
@@ -101,9 +106,10 @@ else
             return;
 
         var command = new DeleteArticleByIdCommand((int)ArticleId);
-        var deleteAttempt = await Sender.Send(command);
+        var result = await Sender.Send(command);
 
-        if (deleteAttempt.Success)
+        if (result.Success)
             NavigationManager.NavigateTo("/articles");
+        else UpdateErrorMessage(result.Message);
     }
 }

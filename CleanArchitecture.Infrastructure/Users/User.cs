@@ -2,7 +2,7 @@
 using CleanArchitecture.Domain.Users;
 using Microsoft.AspNetCore.Identity;
 
-namespace CleanArchitecture.Infrastructure.Authentication;
+namespace CleanArchitecture.Infrastructure.Users;
 
 public class User : IdentityUser, IUser
 {

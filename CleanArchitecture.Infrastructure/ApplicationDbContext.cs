@@ -1,5 +1,5 @@
 ﻿using CleanArchitecture.Domain.Articles;
-using CleanArchitecture.Infrastructure.Authentication;
+using CleanArchitecture.Infrastructure.Users;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

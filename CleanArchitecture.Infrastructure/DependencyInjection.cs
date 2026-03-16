@@ -1,8 +1,10 @@
 ﻿using CleanArchitecture.Application.Authentication;
+using CleanArchitecture.Application.User;
 using CleanArchitecture.Domain.Articles;
 using CleanArchitecture.Domain.Users;
 using CleanArchitecture.Infrastructure.Authentication;
 using CleanArchitecture.Infrastructure.Repositories;
+using CleanArchitecture.Infrastructure.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
@@ -22,10 +24,13 @@ public static class DependencyInjection
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
         );
+
         AddAuthentication(services);
 
+        services.AddHttpContextAccessor();
         services.AddScoped<IArticleRepository, ArticleRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUserService, UserService>();
 
         return services;
     }

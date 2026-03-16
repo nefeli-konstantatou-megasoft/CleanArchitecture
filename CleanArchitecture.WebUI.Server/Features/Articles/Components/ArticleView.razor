@@ -1,0 +1,34 @@
+﻿@page "/articles/view/{ArticleId:int}"
+
+@if(!string.IsNullOrEmpty(errors))
+{
+    <h2>Error!</h2>
+    <p class="text-danger">@errors</p>
+}
+else
+{
+    <h2>@article.Title</h2>
+    <p><small>Published <time>@article.DatePublished</time></small> by user <strong>@article.UserName</strong></p>
+    <hr />
+    <p>@article.Content</p>
+    @if(article.CanEdit)
+    {
+        <a href="/articles/edit/@ArticleId" class="btn btn-primary">Edit</a>
+    }
+}
+
+@code {
+    [Parameter]
+    public int ArticleId { get; set; }
+    private ArticleResponse article;
+    private string errors = string.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var result = await Sender.Send(new GetArticleByIdQuery(ArticleId));
+
+        if (result.Success && result.Value is not null)
+            article = (ArticleResponse)result.Value;
+        else errors = result.Message!.Body;
+    }
+}

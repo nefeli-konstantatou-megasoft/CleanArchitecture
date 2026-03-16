@@ -1,13 +1,16 @@
-﻿using CleanArchitecture.Domain.Users;
+﻿using CleanArchitecture.Application.User;
+using CleanArchitecture.Domain.Users;
 
 namespace CleanArchitecture.Application.Articles.GetArticleById;
 
 public class GetArticleByIdQueryHandler(
     IArticleRepository articleRepository,
-    IUserRepository userRepository) : IQueryHandler<GetArticleByIdQuery, ArticleResponse?>
+    IUserRepository userRepository,
+    IUserService userService) : IQueryHandler<GetArticleByIdQuery, ArticleResponse?>
 {
     private readonly IArticleRepository _articleRepository = articleRepository;
     private readonly IUserRepository _userRepository = userRepository;
+    private readonly IUserService _userService = userService;
 
     public async Task<Result<ArticleResponse?>> Handle(GetArticleByIdQuery request, CancellationToken cancellationToken)
     {
@@ -22,10 +25,13 @@ public class GetArticleByIdQueryHandler(
         {
             var author = await _userRepository.GetUserByIdAsync(article.UserId);
             articleResponse.UserName = author?.UserName ?? "Unknown";
+            articleResponse.UserId = article.UserId;
+            articleResponse.CanEdit = await _userService.UserCanEditArticleAsync(article.Id);
         }
         else
         {
             articleResponse.UserName = "Unknown";
+            articleResponse.CanEdit = false;
         }
 
         return articleResponse;
