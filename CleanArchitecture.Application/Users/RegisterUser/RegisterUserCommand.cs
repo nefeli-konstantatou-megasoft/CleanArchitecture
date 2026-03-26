@@ -1,4 +1,4 @@
-﻿namespace CleanArchitecture.Application.User.RegisterUser;
+﻿namespace CleanArchitecture.Application.Users.RegisterUser;
 
 public class RegisterUserCommand(string username, string email, string password) : ICommand
 {

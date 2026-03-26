@@ -1,0 +1,41 @@
+﻿<style>
+    .custom-modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: aliceblue;
+        padding: 2rem;
+        border: 1px solid black;
+    }
+</style>
+
+@if(Visible)
+{
+    <div class="custom-modal">
+        <h2>@Title</h2>
+        <hr />
+        @ChildContent
+        <button class="btn btn-primary" @onclick="CloseModal">Close</button>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public bool Visible { get; set; }
+
+    [Parameter, EditorRequired]
+    public string Title { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> ModalClosed { get; set; }
+
+    [Parameter, EditorRequired]
+    public RenderFragment? ChildContent { get; set; } = null;
+
+    private void CloseModal()
+    {
+        Visible = false;
+        ModalClosed.InvokeAsync(Visible);
+    }
+}

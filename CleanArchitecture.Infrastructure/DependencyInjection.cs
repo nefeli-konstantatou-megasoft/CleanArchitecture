@@ -1,5 +1,5 @@
 ﻿using CleanArchitecture.Application.Authentication;
-using CleanArchitecture.Application.User;
+using CleanArchitecture.Application.Users;
 using CleanArchitecture.Domain.Articles;
 using CleanArchitecture.Domain.Users;
 using CleanArchitecture.Infrastructure.Authentication;

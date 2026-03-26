@@ -1,6 +1,6 @@
 ﻿using CleanArchitecture.Application.Authentication;
 
-namespace CleanArchitecture.Application.User.RegisterUser;
+namespace CleanArchitecture.Application.Users.RegisterUser;
 
 public class RegisterUserCommandHandler : ICommandHandler<RegisterUserCommand>
 {

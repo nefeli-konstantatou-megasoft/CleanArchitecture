@@ -1,4 +1,4 @@
-﻿namespace CleanArchitecture.Application.User.LoginUser;
+﻿namespace CleanArchitecture.Application.Users.LoginUser;
 
 public class LoginUserCommand(string username, string password) : ICommand
 {

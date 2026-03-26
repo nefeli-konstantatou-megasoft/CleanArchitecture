@@ -1,5 +1,5 @@
 ﻿using CleanArchitecture.Application.Exceptions;
-using CleanArchitecture.Application.User;
+using CleanArchitecture.Application.Users;
 
 namespace CleanArchitecture.Application.Articles.CreateArticle;
 

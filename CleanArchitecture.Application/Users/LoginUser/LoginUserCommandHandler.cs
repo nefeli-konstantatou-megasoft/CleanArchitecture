@@ -1,6 +1,6 @@
 ﻿using CleanArchitecture.Application.Authentication;
 
-namespace CleanArchitecture.Application.User.LoginUser;
+namespace CleanArchitecture.Application.Users.LoginUser;
 
 public class LoginUserCommandHandler : ICommandHandler<LoginUserCommand>
 {

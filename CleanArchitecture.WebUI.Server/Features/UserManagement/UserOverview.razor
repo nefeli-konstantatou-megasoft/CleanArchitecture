@@ -1,0 +1,132 @@
+﻿@page "/user-overview"
+@using CleanArchitecture.Application.Users.AddRoleToUser
+@using CleanArchitecture.WebUI.Server.UIFeatures.Modal
+@rendermode @(new InteractiveServerRenderMode(false))
+@attribute [Authorize(Roles = "Admin")]
+
+<PageTitle>User Overview</PageTitle>
+
+<style>
+    .user-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        grid-template-rows: repeat(@(users?.Count ?? 0), 1fr);
+    }
+
+    .user-grid-header {
+        border-bottom: 1px solid black;
+    }
+</style>
+
+<h3>User Overview</h3>
+
+@if(users is null)
+{
+    <h3>Loading...</h3>
+}
+else if(users.Count <= 0)
+{
+    <span>No users found.</span>
+}
+else
+{
+    <div class="user-grid">
+        <div class="user-grid-header">Username <button @onclick="@(() => OnSort("UserName"))">sort</button></div>
+        <div class="user-grid-header">Email <button @onclick="@(() => OnSort("Email"))">sort</button></div>
+        <div class="user-grid-header">Id <button @onclick="@(() => OnSort("Id"))">sort</button></div>
+        <div class="user-grid-header">Roles</div> 
+        <div class="user-grid-header">Manage</div> 
+        @foreach(var user in users)
+        {
+            <div>@user.UserName</div>
+            <div>@user.Email</div>
+            <div>@user.Id</div>
+            <div>@string.Join(", ", user.Roles)</div>
+            <div><button @onclick="() => OpenModal(user)">Manage roles</button></div>
+        }
+    </div>
+}
+
+<Modal Visible="modalVisible" Title="User Roles">
+    <span><strong>For user @selectedUser?.UserName</strong></span>
+    @foreach(var role in Roles)
+    {
+        <div style="display: flex; flex-flow: row nowrap; gap: 1rem; margin-bottom: 1rem; align-content: center;">
+            <p>@role</p>
+            <button @onclick="() => RemoveRole(role)">remove</button>
+        </div>
+    }
+    <div style="display: flex; flex-flow: row nowrap; gap: 1rem">
+        <InputText @bind-Value="newRole" DisplayName="Role name" class="margin-bottom: 1rem;" />
+        <button @onclick="AddRole">add</button>
+    </div>
+</Modal>
+
+<span class="text-danger">@errors</span>
+
+@code {
+    private string errors = string.Empty;
+    private List<UserResponse>? users = null;
+    UserResponse? selectedUser = null;
+    private bool modalVisible = false;
+
+    #region Roles
+
+    private List<string> Roles { get; set; } = [];
+    private string newRole { get; set; } = string.Empty;
+
+    private async Task AddRole()
+    {
+        if(!string.IsNullOrWhiteSpace(newRole) && selectedUser is not null)
+        {
+            var result = await Sender.Send(new AddRoleToUserCommand(selectedUser?.Id ?? string.Empty, newRole));
+
+            if(result.Failure)
+            {
+                errors = result?.Message?.Body ?? string.Empty;
+                return;
+            }
+
+            Roles.Add(newRole);
+            newRole = string.Empty;
+        }
+    }
+
+    private async Task RemoveRole(string role)
+    {
+        if(selectedUser is not null)
+        {
+            var result = await Sender.Send(new RemoveRoleFromUserCommand(selectedUser?.Id ?? string.Empty, role));
+
+            if(result.Failure)
+            {
+                errors = result?.Message?.Body ?? string.Empty;
+                return;
+            }
+
+            Roles.Remove(role);
+        }
+    }
+
+    #endregion
+
+    public async Task OnSort(string fieldName)
+    {
+        // (T)typeof(User).GetField(fieldName).
+    }
+
+    public async Task OpenModal(UserResponse user)
+    {
+        selectedUser = user;
+        Roles = selectedUser?.Roles ?? [];
+        modalVisible = true;
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await Sender.Send(new GetUsersQuery());
+        if (result.Success)
+            users = result.Success ? result.Value ?? [] : [];
+    }
+}
