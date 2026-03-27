@@ -1,0 +1,148 @@
+﻿@page "/roles-management"
+@using CleanArchitecture.Application.Roles
+@using CleanArchitecture.Application.Roles.ChangeRolePermissions
+@using CleanArchitecture.Application.Roles.CreateRole
+@using CleanArchitecture.Application.Roles.DeleteRole
+@using CleanArchitecture.Application.Roles.GetRoles
+@using CleanArchitecture.Application.Users.AddRoleToUser
+@using CleanArchitecture.Domain.Roles
+@using CleanArchitecture.WebUI.Server.UIFeatures.Modal
+@rendermode InteractiveServer
+@attribute [Authorize(Roles = "Admin")]
+
+<PageTitle>Roles Management</PageTitle>
+
+<style>
+    .role-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        grid-template-rows: repeat(@(roles?.Count ?? 0), 1fr);
+    }
+
+    .role-grid-header {
+        border-bottom: 1px solid black;
+    }
+</style>
+
+<h3>User Overview</h3>
+
+@if(roles is null)
+{
+    <h3>Loading...</h3>
+}
+else if(roles.Count <= 0)
+{
+    <span>No users found.</span>
+}
+else
+{
+    <div class="role-grid">
+        <div class="role-grid-header">Name</div>
+        <div class="role-grid-header">Id</div>
+        <div class="role-grid-header">Permissions</div>
+        <div class="role-grid-header">Manage</div> 
+        <div class="role-grid-header">Delete</div> 
+        @foreach(var role in roles)
+        {
+            var permissions = Convert.ToString((long)(RolePermissionFlags)role.Permissions, 2);
+            var cappedPermissions = permissions.Substring(0, Math.Min(permissions.Length, 16));
+
+            <div>@role.Name</div>
+            <div>@role.Id</div>
+            <div>@cappedPermissions</div>
+            <div><button class="btn btn-outline-primary" @onclick="() => OpenModal(role)">Manage permissions</button></div>
+            <div><button class="btn btn-danger" @onclick="() => DeleteRole(role)">Delete</button></div>
+        }
+    </div>
+    <div style="display: flex; flex-flow: row nowrap; gap: 1rem;">
+        <InputText @bind-Value="newRoleName" />
+        <button class="btn btn-primary form-control" @onclick="() => AddRole()">Add role</button>
+    </div>
+}
+
+<Modal @bind-Visible="modalVisible" Title="Role Permissions" ModalSaved="OnModalSaved">
+    <span><strong>Permissions for role @selectedRole?.Name</strong></span>
+    @for (int i = 0; i < PermissionValues.Count; ++i)
+    {
+        var value = PermissionValues[i];
+        var name = PermissionNames[i];
+        var current_permission_checked = (bool)Permissions[value];
+        <div style="display: flex; flex-flow: row nowrap; gap: 1rem; margin-bottom: 5px;">
+            <span>@name</span>
+            <InputCheckbox Value="current_permission_checked"
+                           ValueExpression="() => current_permission_checked"
+                           ValueChanged="@(isChecked => Permissions[value] = isChecked ? RolePermissions.All : RolePermissions.None)" />
+        </div>
+    }
+    <div class="pt-2 d-flex flex-column">
+        <span><strong>Binary form = @Convert.ToString((long)(RolePermissionFlags)Permissions, 2)</strong></span>
+        <span><strong>Decimal form = @Convert.ToString((long)(RolePermissionFlags)Permissions, 10)</strong></span>
+    </div>
+</Modal>
+
+<span class="text-danger">@errors</span>
+
+@code {
+    private static readonly List<RolePermissionFlags> PermissionValues = Enum.GetValues<RolePermissionFlags>().ToList();
+    private static readonly List<string> PermissionNames = PermissionValues.Select(e => e.ToString()).ToList();
+
+    public string newRoleName { get; set; } = string.Empty;
+    private string errors = string.Empty;
+    private List<RoleResponse>? roles = null;
+    private RoleResponse? selectedRole = null;
+    private bool modalVisible = false;
+
+    private RolePermissions Permissions = RolePermissions.None;
+
+    public async Task OpenModal(RoleResponse role)
+    {
+        selectedRole = role;
+        Permissions = selectedRole?.Permissions ?? RolePermissions.None;
+        modalVisible = true;
+    }
+
+    public async Task DeleteRole(RoleResponse role)
+    {
+        var result = await Sender.Send(new DeleteRoleCommand(role.Name));
+        errors = result.Message?.Body ?? string.Empty;
+
+        if (result.Success)
+            roles?.Remove(role);
+    }
+
+    public async Task AddRole()
+    {
+        var result = await Sender.Send(new CreateRoleCommand(newRoleName, RolePermissions.None));
+        errors = result.Message?.Body ?? string.Empty;
+
+        if (result.Success)
+            roles?.Add(result.Value);
+
+        newRoleName = string.Empty;
+    }
+
+    public async Task OnModalSaved()
+    {
+        if(selectedRole is RoleResponse actualSelectedRole && roles is not null)
+        {
+            var result = await Sender.Send(new ChangeRolePermissionsCommand(actualSelectedRole.Name, Permissions));
+            errors = result.Message?.Body ?? string.Empty;
+
+            if(result.Success)
+            {
+                var index = roles.FindIndex(role => role.Name == actualSelectedRole.Name);
+                var role = roles[index];
+                role.Permissions = Permissions;
+                roles[index] = role;
+            }
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await Sender.Send(new GetRolesQuery());
+        if (result.Success)
+            roles = result.Success ? result.Value ?? [] : [];
+        else errors = result.Message?.Body ?? string.Empty;
+    }
+}

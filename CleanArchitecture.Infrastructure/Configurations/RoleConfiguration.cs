@@ -2,6 +2,7 @@
 using CleanArchitecture.Infrastructure.Roles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CleanArchitecture.Infrastructure.Configurations;
 
@@ -12,8 +13,8 @@ internal sealed class RoleConfiguration : IEntityTypeConfiguration<Role>
         builder.ToTable("AspNetRoles");
 
         builder.HasKey(role => role.Id);
-
         builder.Property(role => role.Id)
+            .HasAnnotation("DatabaseGeneratedAttribute", DatabaseGeneratedOption.Identity)
             .HasMaxLength(450);
 
         builder.Property(role => role.Name)

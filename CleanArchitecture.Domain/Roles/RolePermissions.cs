@@ -17,20 +17,22 @@ public struct RolePermissions
 {
     private RolePermissionFlags _permissions;
 
-    public static readonly RolePermissions All = new RolePermissions((RolePermissionFlags)ulong.MaxValue);
+    public static readonly RolePermissions All = new RolePermissions((RolePermissionFlags)long.MaxValue);
     public static readonly RolePermissions None = new RolePermissions((RolePermissionFlags)0);
 
-    public bool this[RolePermissions otherPermissions]
+    public RolePermissions this[RolePermissions otherPermissions]
     {
-        get => (_permissions & otherPermissions._permissions) == otherPermissions._permissions;
-        set => _permissions = otherPermissions._permissions;
+        readonly get => (_permissions & otherPermissions._permissions) == otherPermissions._permissions ? All : None;
+        set => _permissions = (_permissions & ~otherPermissions) | (otherPermissions & value);
     }
 
     public static RolePermissions operator|(RolePermissions first, RolePermissions second) => new RolePermissions(first._permissions | second._permissions);
     public static RolePermissions operator&(RolePermissions first, RolePermissions second) => new RolePermissions(first._permissions & second._permissions);
+    public static RolePermissions operator~(RolePermissions operand) => new RolePermissions(~operand._permissions);
 
     public static implicit operator RolePermissions(RolePermissionFlags permissionFlags) => new RolePermissions(permissionFlags);
-    public static implicit operator RolePermissionFlags(RolePermissions permissionFlags) => permissionFlags._permissions;
+    public static implicit operator RolePermissionFlags(RolePermissions permissions) => permissions._permissions;
+    public static implicit operator bool(RolePermissions permissionFlags) => permissionFlags._permissions != 0;
 
     private RolePermissions(RolePermissionFlags permissionFlags)
     {

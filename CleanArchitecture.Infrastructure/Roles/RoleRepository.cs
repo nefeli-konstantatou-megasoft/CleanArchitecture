@@ -1,6 +1,7 @@
 ﻿using CleanArchitecture.Domain.Abstractions;
 using CleanArchitecture.Domain.Roles;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Infrastructure.Roles;
 
@@ -16,6 +17,11 @@ public class RoleRepository(
         return await _roleManager.RoleExistsAsync(roleName);
     }
 
+    public async Task<List<IRole>?> GetRolesAsync()
+    {
+        return (await _context.Roles.ToListAsync()).ConvertAll(role => (IRole)role);
+    }
+
     public async Task<IRole?> GetRoleAsync(string roleName)
     {
         return await _roleManager.FindByNameAsync(roleName);
@@ -24,14 +30,21 @@ public class RoleRepository(
     public async Task<IRole?> CreateRoleAsync(string roleName, RolePermissions initialPermissions)
     {
         var result = await _roleManager.CreateAsync(new Role(roleName, initialPermissions));
+
         if (!result.Succeeded)
             return null;
+
         return await GetRoleAsync(roleName);
     }
 
     public async Task<bool> DeleteRoleAsync(string roleName)
     {
-        var result = await _roleManager.DeleteAsync(new Role(roleName));
+        var role = await _roleManager.FindByNameAsync(roleName);
+
+        if (role is null)
+            return false;
+
+        var result = await _roleManager.DeleteAsync(role);
         return result.Succeeded;
     }
 

@@ -5,6 +5,7 @@ namespace CleanArchitecture.Domain.Roles;
 public interface IRoleRepository
 {
     public Task<bool> RoleExistsAsync(string roleName);
+    public Task<List<IRole>?> GetRolesAsync();
     public Task<IRole?> GetRoleAsync(string roleName);
     public Task<IRole?> CreateRoleAsync(string roleName, RolePermissions initialPermissions);
     public Task<bool> DeleteRoleAsync(string roleName);

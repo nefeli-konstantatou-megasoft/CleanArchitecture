@@ -1,4 +1,6 @@
-﻿<style>
+﻿@rendermode InteractiveServer
+
+<style>
     .custom-modal {
         position: fixed;
         top: 50%;
@@ -16,7 +18,17 @@
         <h2>@Title</h2>
         <hr />
         @ChildContent
-        <button class="btn btn-primary" @onclick="CloseModal">Close</button>
+        <div class="d-flex flex-row flex-nowrap gap-2">
+            @if(ModalSaved.HasDelegate)
+            {
+                <button class="btn btn-primary" @onclick="() => ModalSaved.InvokeAsync()">Save</button>
+                <button class="btn btn-secondary" @onclick="CloseModal">Close</button>
+            }
+            else
+            {
+                <button class="btn btn-primary" @onclick="CloseModal">Close</button>
+            }
+        </div>
     </div>
 }
 
@@ -28,6 +40,8 @@
     [Parameter, EditorRequired] public string Title { get; set; }
 
     [Parameter] public EventCallback ModalClosed { get; set; }
+
+    [Parameter] public EventCallback ModalSaved { get; set; }
 
     [Parameter, EditorRequired] public RenderFragment? ChildContent { get; set; } = null;
 
