@@ -1,7 +1,7 @@
 ﻿@page "/user-overview"
 @using CleanArchitecture.Application.Users.AddRoleToUser
 @using CleanArchitecture.WebUI.Server.UIFeatures.Modal
-@rendermode @(new InteractiveServerRenderMode(false))
+@rendermode InteractiveServer
 @attribute [Authorize(Roles = "Admin")]
 
 <PageTitle>User Overview</PageTitle>
@@ -47,7 +47,7 @@ else
     </div>
 }
 
-<Modal Visible="modalVisible" Title="User Roles">
+<Modal @bind-Visible="modalVisible" Title="User Roles" ModalClosed="OnModalClosed">
     <span><strong>For user @selectedUser?.UserName</strong></span>
     @foreach(var role in Roles)
     {
@@ -56,7 +56,7 @@ else
             <button @onclick="() => RemoveRole(role)">remove</button>
         </div>
     }
-    <div style="display: flex; flex-flow: row nowrap; gap: 1rem">
+    <div style="display: flex; flex-flow: row nowrap; gap: 1rem; margin-bottom: 5px;">
         <InputText @bind-Value="newRole" DisplayName="Role name" class="margin-bottom: 1rem;" />
         <button @onclick="AddRole">add</button>
     </div>
@@ -104,7 +104,7 @@ else
                 return;
             }
 
-            Roles.Remove(role);
+            Roles.RemoveAll(r => r == role);
         }
     }
 
@@ -120,7 +120,14 @@ else
         selectedUser = user;
         Roles = selectedUser?.Roles ?? [];
         modalVisible = true;
-        StateHasChanged();
+    }
+
+    public async Task OnModalClosed()
+    {
+        if(selectedUser is UserResponse actualSelectedUser)
+        {
+            actualSelectedUser.Roles = Roles;
+        }
     }
 
     protected override async Task OnInitializedAsync()

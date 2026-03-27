@@ -1,9 +1,12 @@
-﻿namespace CleanArchitecture.Application.Users;
+﻿using CleanArchitecture.Domain.Roles;
+
+namespace CleanArchitecture.Application.Users;
 
 public interface IUserService
 {
     Task<string> GetUserIdAsync();
     Task<bool> UserHasRoleAsync(string role);
+    Task<bool> UserHasPermissionsAsync(RolePermissions rolePersmissions);
     Task<bool> UserCanCreateArticlesAsync();
     Task<bool> UserCanEditArticleAsync(int articleId);
     Task<List<string>> GetUserRolesByUserIdAsync(string userId);

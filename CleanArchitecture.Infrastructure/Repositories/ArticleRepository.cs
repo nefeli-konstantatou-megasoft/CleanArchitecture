@@ -11,7 +11,13 @@ public class ArticleRepository : IArticleRepository
     {
         _context = context;
     }
-    public async Task<List<Article>> GetAllArticlesAsync() => await _context.Articles.ToListAsync();
+
+    public async Task<List<Article>> GetAllPublishedArticlesAsync()
+        => await _context.Articles.Where(article => article.IsPublished).ToListAsync();
+
+    public async Task<List<Article>> GetAllArticlesAsync()
+        => await _context.Articles.ToListAsync();
+
     public async Task<Article> CreateArticleAsync(Article article)
     {
         _context.Articles.Add(article);

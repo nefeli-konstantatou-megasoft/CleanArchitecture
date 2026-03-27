@@ -1,4 +1,5 @@
 ﻿using CleanArchitecture.Application.Users;
+using CleanArchitecture.Domain.Roles;
 using CleanArchitecture.Domain.Users;
 
 namespace CleanArchitecture.Application.Articles.GetArticles;
@@ -14,7 +15,13 @@ public class GetArticlesQueryHandler(
 
     public async Task<Result<List<ArticleResponse>>> Handle(GetArticlesQuery request, CancellationToken cancellationToken)
     {
-        var articles = await _articleRepository.GetAllArticlesAsync();
+        List<Article> articles;
+
+        if (await _userService.UserHasPermissionsAsync(RolePermissionFlags.ViewUnpublishedArticles))
+            articles = await _articleRepository.GetAllArticlesAsync();
+        else
+            articles = await _articleRepository.GetAllPublishedArticlesAsync();
+
         List<ArticleResponse> response = [];
 
         foreach (var article in articles)

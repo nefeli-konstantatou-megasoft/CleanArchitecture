@@ -1,9 +1,11 @@
 ﻿using CleanArchitecture.Application.Authentication;
 using CleanArchitecture.Application.Users;
 using CleanArchitecture.Domain.Articles;
+using CleanArchitecture.Domain.Roles;
 using CleanArchitecture.Domain.Users;
 using CleanArchitecture.Infrastructure.Authentication;
 using CleanArchitecture.Infrastructure.Repositories;
+using CleanArchitecture.Infrastructure.Roles;
 using CleanArchitecture.Infrastructure.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -29,6 +31,7 @@ public static class DependencyInjection
 
         services.AddHttpContextAccessor();
         services.AddScoped<IArticleRepository, ArticleRepository>();
+        services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUserService, UserService>();
 
@@ -50,7 +53,7 @@ public static class DependencyInjection
         }).AddIdentityCookies();
 
         services.AddIdentityCore<User>()
-            .AddRoles<IdentityRole>()
+            .AddRoles<Role>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddSignInManager()
             .AddDefaultTokenProviders();

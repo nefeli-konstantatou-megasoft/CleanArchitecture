@@ -21,21 +21,20 @@
 }
 
 @code {
-    [Parameter]
-    public bool Visible { get; set; }
+    [Parameter] public bool Visible { get; set; }
 
-    [Parameter, EditorRequired]
-    public string Title { get; set; }
+    [Parameter] public EventCallback<bool> VisibleChanged { get; set; }
 
-    [Parameter]
-    public EventCallback<bool> ModalClosed { get; set; }
+    [Parameter, EditorRequired] public string Title { get; set; }
 
-    [Parameter, EditorRequired]
-    public RenderFragment? ChildContent { get; set; } = null;
+    [Parameter] public EventCallback ModalClosed { get; set; }
+
+    [Parameter, EditorRequired] public RenderFragment? ChildContent { get; set; } = null;
 
     private void CloseModal()
     {
         Visible = false;
-        ModalClosed.InvokeAsync(Visible);
+        VisibleChanged.InvokeAsync(Visible);
+        ModalClosed.InvokeAsync();
     }
 }

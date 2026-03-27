@@ -8,6 +8,6 @@ public class RemoveRoleFromUserCommandHandler(
     public async Task<Result> Handle(RemoveRoleFromUserCommand request, CancellationToken cancellationToken)
     {
         var result = await _userService.RemoveRoleFromUserAsync(request.UserId, request.RoleName);
-        return result?.Code != 0 ? Result.Error(result!) : Result.Ok();
+        return result is null ? Result.Ok() : Result.Error(result);
     }
 }
