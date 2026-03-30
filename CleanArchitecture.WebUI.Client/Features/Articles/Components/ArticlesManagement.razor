@@ -1,0 +1,102 @@
+﻿@page "/articles-management"
+@using CleanArchitecture.Application.Articles
+@using CleanArchitecture.Application.Articles.UpdateArticlePublish
+@rendermode @(new InteractiveWebAssemblyRenderMode(false))
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<style>
+    .article-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        grid-template-rows: repeat(@(articles?.Count ?? 0), 1fr);
+        border: 1px solid black;
+    }
+
+    .article-grid > div {
+        display: flex;
+        align-content: stretch;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+    }
+
+    .article-grid-header {
+        display: flex;
+        align-content: flex-end;
+        align-items: flex-end;
+        justify-content: center;
+        border-bottom: 1px solid black;
+        width: 100%;
+        height: 100%;
+        background-color: aliceblue;
+    }
+</style>
+
+<PageTitle>Articles Management</PageTitle>
+<h3>Articles Management</h3>
+
+@if(articles is null)
+{
+    <h3>Loading...</h3>
+}
+else if(articles.Count <= 0)
+{
+    <span>You have not written any articles.</span>
+}
+else
+{
+    <div class="article-grid">
+        <div class="article-grid-header">Id</div>
+        <div class="article-grid-header">Title</div>
+        <div class="article-grid-header">Content</div>
+        <div class="article-grid-header">Published</div> 
+        <div class="article-grid-header">Toggle Publish</div> 
+        <div class="article-grid-header">Edit</div> 
+        @foreach(var article in articles)
+        {
+            <div>@article.Id</div>
+            <div>@article.Title</div>
+            <div><time>@article.Content</time></div>
+            <div>
+                @if(article.IsPublished)
+                {
+                    <time>@article.DatePublished</time>
+                }
+                else
+                {
+                    <em>Unpublished</em>
+                }
+            </div>
+            <div><input type="checkbox" checked="@article.IsPublished" @onchange="@(() => UpdatePublishedState(article))" class="ca-form-checkbox" /></div>
+            <div><button class="ca-button ca-outline-primary" @onclick="@(() => NavigationManager.NavigateTo($"/articles/edit/{article.Id}"))">Edit</button></div>
+        }
+    </div>
+}
+
+@code {
+    private List<ArticleResponse>? articles;
+
+    public async Task UpdatePublishedState(ArticleResponse article)
+    {
+        if (articles is null) return;
+        bool newIsPublished = !article.IsPublished;
+        var result = await Http.GetAsync($"/api/articles/set-article-publish-state/{article.Id}/{newIsPublished}");
+
+        if(result.IsSuccessStatusCode)
+        {
+            var index = articles.FindIndex(target => target.Id == article.Id);
+            var newArticle = articles[index];
+            newArticle.IsPublished = newIsPublished;
+            articles[index] = newArticle;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        articles = await Http.GetFromJsonAsync<List<ArticleResponse>>("/api/articles/by-current-user");
+
+        if (articles is null)
+            articles = [];
+    }
+}

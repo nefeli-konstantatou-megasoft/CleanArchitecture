@@ -37,10 +37,17 @@ else
 {
     @foreach(var article in articles)
     {
-        <div class="ca-box mb-4">
+        <div class="ca-box mb-4" style="@(!article.IsPublished ? "background-color: bisque;" : string.Empty)">
             <h4 style="margin-bottom: 0.1rem">@article.Title</h4>
             <p style="margin-bottom: 0.1rem">@article.Content</p>
-            <p class="text-sm-end">@article.DatePublished by @article.UserName</p>
+            @if(article.IsPublished)
+            {
+                <p class="text-sm-end">@article.DatePublished by @article.UserName</p>
+            }
+            else
+            {
+                <p class="text-sm-end"><em>Unpublished</em> by @article.UserName</p>
+            }
             <hr />
             <div class="display: inline">
                 <a href="/articles/view/@article.Id" class="ca-button ca-outline-primary" style="margin-right: 3px; margin: 0.2rem;">View</a>

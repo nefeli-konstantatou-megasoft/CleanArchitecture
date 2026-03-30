@@ -8,7 +8,14 @@
 else
 {
     <h2>@article.Title</h2>
-    <p><small>Published <time>@article.DatePublished</time></small> by user <strong>@article.UserName</strong></p>
+    @if(article.IsPublished)
+    {
+        <p><small>Published <time>@article.DatePublished</time></small> by user <strong>@article.UserName</strong></p>
+    }
+    else
+    {
+        <p><small>Created by user <strong>@article.UserName</strong> (<em>unpublished</em>)</small></p>
+    }
     <hr />
     <p>@article.Content</p>
     @if(article.CanEdit)

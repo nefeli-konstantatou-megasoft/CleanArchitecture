@@ -1,4 +1,5 @@
 ﻿using CleanArchitecture.Domain.Abstractions;
+using CleanArchitecture.Domain.Users;
 
 namespace CleanArchitecture.Domain.Articles;
 
@@ -9,4 +10,6 @@ public class Article : Entity
     public DateTime DatePublished { get; set; } = DateTime.Now;
     public bool IsPublished { get; set; } = false;
     public string? UserId { get; set; }
+
+    public IUser? Author { get; set; }
 }

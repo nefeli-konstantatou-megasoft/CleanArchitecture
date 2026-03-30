@@ -11,6 +11,7 @@ public enum RolePermissionFlags : ulong
     DeleteAllArticles = 1 << 5,
     PublishAllArticles = 1 << 6,
     ManageRoles = 1 << 7,
+    ManageArticles = 1 << 8,
 };
 
 public struct RolePermissions

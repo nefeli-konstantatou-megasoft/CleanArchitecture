@@ -12,11 +12,29 @@ public class ArticleRepository : IArticleRepository
         _context = context;
     }
 
-    public async Task<List<Article>> GetAllPublishedArticlesAsync()
-        => await _context.Articles.Where(article => article.IsPublished).ToListAsync();
-
     public async Task<List<Article>> GetAllArticlesAsync()
-        => await _context.Articles.ToListAsync();
+        => await _context.Articles
+            .Include(article => article.Author)
+            .OrderByDescending(article => article.DatePublished)
+            .ToListAsync();
+
+    public async Task<List<Article>> GetAllPublishedArticlesAsync()
+        => await _context.Articles
+            .Include(article => article.Author)
+            .OrderByDescending(article => article.DatePublished)
+            .Where(article => article.IsPublished)
+            .ToListAsync();
+
+    public async Task<List<Article>> GetArticlesByUserId(string userId)
+    {
+        var result =  await _context.Articles
+            .Include(article => article.Author)
+            .Where(article => article.UserId == userId)
+            .OrderByDescending(article => article.DatePublished)
+            .OrderBy(article => article.IsPublished)
+            .ToListAsync();
+        return result;
+    }
 
     public async Task<Article> CreateArticleAsync(Article article)
     {
@@ -24,11 +42,13 @@ public class ArticleRepository : IArticleRepository
         await _context.SaveChangesAsync();
         return article;
     }
+
     public async Task<Article?> GetArticleByIdAsync(int id)
     {
         var article = await _context.Articles.FindAsync(id);
         return article;
     }
+
     public async Task<Article?> UpdateArticleAsync(Article article)
     {
         var articleToUpdate = await GetArticleByIdAsync(article.Id);
@@ -44,6 +64,19 @@ public class ArticleRepository : IArticleRepository
         await _context.SaveChangesAsync();
         return articleToUpdate;
     }
+
+    public async Task<bool> UpdateArticlePublishAsync(int id, bool isPublished)
+    {
+        var articleToUpdate = await GetArticleByIdAsync(id);
+        if (articleToUpdate is null)
+            return false;
+
+        articleToUpdate.IsPublished = isPublished;
+
+        int result = await _context.SaveChangesAsync();
+        return result == 0;
+    }
+
     public async Task<bool> DeleteArticleByIdAsync(int id)
     {
         var article = await GetArticleByIdAsync(id);

@@ -24,24 +24,18 @@ public class GetArticlesQueryHandler(
 
         List<ArticleResponse> response = [];
 
-        foreach (var article in articles)
-        {
-            var articleResponse = article.Adapt<ArticleResponse>();
-            if(article.UserId is not null)
-            {
-                var author = await _userRepository.GetUserByIdAsync(article.UserId);
-                articleResponse.UserName = author?.UserName ?? "Unknown";
-                articleResponse.UserId = article.UserId;
-                articleResponse.CanEdit = await _userService.UserCanEditArticleAsync(article.Id);
-            }
-            else
-            {
-                articleResponse.UserName = "Unknown";
-                articleResponse.CanEdit = false;
-            }
-            response.Add(articleResponse);
-        }
+        foreach(var article in articles)
+            response.Add(new ArticleResponse(
+                article.Id,
+                article.Title,
+                article.Content,
+                article.DatePublished,
+                article.IsPublished,
+                article.Author?.UserName ?? "Unknown",
+                article.UserId ?? string.Empty,
+                await _userService.UserCanEditArticleAsync(article.Id)
+            ));
 
-        return response.OrderByDescending(article => article.DatePublished).ToList();
+        return response;
     }
 }
