@@ -2,24 +2,28 @@
 @attribute [StreamRendering]
 
 <PageTitle>Articles</PageTitle>
-<h3>Articles</h3>
 
-<AuthorizeView Roles="Admin, Writer">
-    <Authorized>
-        <a href="/articles/edit" class="btn btn-primary">Create new article</a>
-    </Authorized>
-    <NotAuthorized>
-        <AuthorizeView Context="NestedAuthorizedView">
-            <Authorized>
-                <span>You do not have permissions to create a new article.</span>
-            </Authorized>
-            <NotAuthorized>
-                <span class="text-sm">Log in to create a new article.</span>
-            </NotAuthorized>
-        </AuthorizeView>
 
-    </NotAuthorized>
-</AuthorizeView>
+<div class="d-flex gap-3 align-items-center mb-3">
+    <h3>Articles</h3>
+
+    <AuthorizeView Roles="Admin, Writer">
+        <Authorized>
+            <a href="/articles/edit" class="ca-button ca-primary">Create new article</a>
+        </Authorized>
+        <NotAuthorized>
+            <AuthorizeView Context="NestedAuthorizedView">
+                <Authorized>
+                    <span class="text-sm">You do not have permissions to create a new article.</span>
+                </Authorized>
+                <NotAuthorized>
+                    <span class="text-sm">Log in to create a new article.</span>
+                </NotAuthorized>
+            </AuthorizeView>
+
+        </NotAuthorized>
+    </AuthorizeView>
+</div>
 
 @if (articles is null)
 {
@@ -33,16 +37,16 @@ else
 {
     @foreach(var article in articles)
     {
-        <div style="padding: 1rem; margin-block: 1rem; border: 1px solid black">
-            <h4>@article.Title</h4>
-            <p>@article.Content</p>
-            <small>@article.DatePublished by @article.UserName</small>
-            <br />
+        <div class="ca-box mb-4">
+            <h4 style="margin-bottom: 0.1rem">@article.Title</h4>
+            <p style="margin-bottom: 0.1rem">@article.Content</p>
+            <p class="text-sm-end">@article.DatePublished by @article.UserName</p>
+            <hr />
             <div class="display: inline">
-                <a href="/articles/view/@article.Id" class="btn btn-outline-primary" style="margin-right: 3px">View</a>
+                <a href="/articles/view/@article.Id" class="ca-button ca-outline-primary" style="margin-right: 3px; margin: 0.2rem;">View</a>
                 @if(article.CanEdit)
                 {
-                    <a href="/articles/edit/@article.Id" class="btn btn-secondary">Edit</a>
+                    <a href="/articles/edit/@article.Id" class="ca-button ca-secondary; margin: 0.2rem;">Edit</a>
                 }
             </div>
         </div>

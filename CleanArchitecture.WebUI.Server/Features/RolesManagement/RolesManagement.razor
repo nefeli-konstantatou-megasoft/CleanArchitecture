@@ -17,14 +17,30 @@
         display: grid;
         grid-template-columns: repeat(5, 1fr);
         grid-template-rows: repeat(@(roles?.Count ?? 0), 1fr);
+        border: 1px solid black;
+    }
+
+    .role-grid > div {
+        display: flex;
+        align-content: stretch;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
     }
 
     .role-grid-header {
+        display: flex;
+        align-content: flex-end;
+        align-items: flex-end;
+        justify-content: center;
         border-bottom: 1px solid black;
+        width: 100%;
+        height: 100%;
+        background-color: aliceblue;
     }
 </style>
 
-<h3>User Overview</h3>
+<h3>Roles Management</h3>
 
 @if(roles is null)
 {
@@ -32,11 +48,11 @@
 }
 else if(roles.Count <= 0)
 {
-    <span>No users found.</span>
+    <span>No roles found.</span>
 }
 else
 {
-    <div class="role-grid">
+    <div class="role-grid mb-3">
         <div class="role-grid-header">Name</div>
         <div class="role-grid-header">Id</div>
         <div class="role-grid-header">Permissions</div>
@@ -50,13 +66,13 @@ else
             <div>@role.Name</div>
             <div>@role.Id</div>
             <div>@cappedPermissions</div>
-            <div><button class="btn btn-outline-primary" @onclick="() => OpenModal(role)">Manage permissions</button></div>
-            <div><button class="btn btn-danger" @onclick="() => DeleteRole(role)">Delete</button></div>
+            <div><button class="ca-button ca-outline-primary" @onclick="() => OpenModal(role)">Manage permissions</button></div>
+            <div><button class="ca-button ca-danger" @onclick="() => DeleteRole(role)">Delete</button></div>
         }
     </div>
     <div style="display: flex; flex-flow: row nowrap; gap: 1rem;">
-        <InputText @bind-Value="newRoleName" />
-        <button class="btn btn-primary form-control" @onclick="() => AddRole()">Add role</button>
+        <InputText class="ca-form-control" @bind-Value="newRoleName" />
+        <button style="width: 30%;" class="ca-button ca-primary" @onclick="() => AddRole()">Add role</button>
     </div>
 }
 
@@ -67,9 +83,10 @@ else
         var value = PermissionValues[i];
         var name = PermissionNames[i];
         var current_permission_checked = (bool)Permissions[value];
-        <div style="display: flex; flex-flow: row nowrap; gap: 1rem; margin-bottom: 5px;">
+        <div style="display: flex; flex-flow: row nowrap; gap: 1rem; justify-content: space-between; margin-bottom: 5px; width: 100%;">
             <span>@name</span>
-            <InputCheckbox Value="current_permission_checked"
+            <InputCheckbox style="margin: 0; padding: 0.5rem"
+                           Value="current_permission_checked"
                            ValueExpression="() => current_permission_checked"
                            ValueChanged="@(isChecked => Permissions[value] = isChecked ? RolePermissions.All : RolePermissions.None)" />
         </div>

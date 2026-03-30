@@ -58,3 +58,95 @@ h1:focus {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+.ca-box {
+    border: 1px solid black;
+    background-color: aliceblue;
+    padding: 2rem;
+}
+
+.ca-grow {
+    width: 100%;
+    height: 100%;
+}
+
+.ca-centered {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.ca-form-group {
+    margin-bottom: 1rem;
+}
+
+.ca-form-label {
+    margin-bottom: 2px;
+    font-weight: bold;
+    display: block;
+}
+
+.ca-form-control {
+    border-radius: 0;
+    border: 1px solid black;
+    background-color: whitesmoke;
+    width: 100%;
+    padding: 0.5rem;
+}
+
+.ca-form-checkbox {
+    border-radius: 0;
+    border: 1px solid black;
+    background-color: whitesmoke;
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+.ca-button {
+    border-radius: 0;
+    border: 1px solid black;
+    padding: 0.5rem;
+    text-decoration: none;
+}
+
+a.ca-button {
+    display: inline-block;
+    padding: 0.5rem;
+    outline: none;
+}
+
+.ca-primary {
+    background-color: teal;
+    color: white;
+}
+
+.ca-secondary {
+    background-color: slategray;
+    color: white;
+}
+
+.ca-danger {
+    background-color: maroon;
+    color: white;
+}
+
+.ca-outline-primary {
+    border-color: teal;
+    color: teal;
+    background-color: whitesmoke;
+}
+
+.ca-outline-secondary {
+    border-color: slategray;
+    color: slategray;
+    background-color: whitesmoke;
+}
+
+.ca-outline-danger {
+    border-color: maroon;
+    color: maroon;
+    background-color: whitesmoke;
+}
+
+.ca-form-control::selection {}

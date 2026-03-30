@@ -1,20 +1,25 @@
 ﻿@page "/login"
 @using CleanArchitecture.Application.Users.LoginUser
 
-<EditForm Model="UserModel" OnValidSubmit="HandleSubmit" FormName="LoginUserForm">
-    <DataAnnotationsValidator />
-    <div class="form-box">
-      <label for="name">Username</label>
-      <InputText @bind-Value="UserModel.UserName" id="name" />
-      <ValidationMessage For="() => UserModel.UserName" />
-    </div>
-    <div class="form-box">
-      <label for="password">Password</label>
-      <InputText @bind-Value="UserModel.Password" id="password" type="password" />
-      <ValidationMessage For="() => UserModel.Password" />
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-</EditForm>
+<PageTitle>Login User</PageTitle>
+<h4>Login</h4>
+
+<div class="ca-box ca-form">
+    <EditForm Model="UserModel" OnValidSubmit="HandleSubmit" FormName="LoginUserForm">
+        <DataAnnotationsValidator />
+        <div class="ca-form-group">
+          <label class="ca-form-label" for="name">Username</label>
+          <InputText class="ca-form-control" @bind-Value="UserModel.UserName" id="name" />
+          <ValidationMessage For="() => UserModel.UserName" />
+        </div>
+        <div class="ca-form-group">
+          <label class="ca-form-label" for="password">Password</label>
+          <InputText class="ca-form-control" @bind-Value="UserModel.Password" id="password" type="password" />
+          <ValidationMessage For="() => UserModel.Password" />
+        </div>
+        <button type="submit" class="ca-button ca-primary">Submit</button>
+    </EditForm>
+</div>
 
 @code {
     [SupplyParameterFromForm]

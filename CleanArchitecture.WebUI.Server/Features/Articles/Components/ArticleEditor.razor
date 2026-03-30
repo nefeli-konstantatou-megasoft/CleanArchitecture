@@ -20,29 +20,31 @@ else
 
 @if(Article is not null)
 {
-    <EditForm Model="Article" OnSubmit="HandleSubmit" FormName="ArticleEditForm" class="mb-5">
-        <div class="mb-2">
-            <label for="title">Title</label>
-            <InputText id="title" class="form-control" @bind-Value="Article.Title" />
+    <EditForm Model="Article" OnSubmit="HandleSubmit" FormName="ArticleEditForm" class="mb-5 ca-box">
+        <div class="ca-form-group">
+            <label for="title" class="ca-form-label">Title</label>
+            <InputText id="title" class="ca-form-control" @bind-Value="Article.Title" />
         </div>
-        <div class="mb-2">
+        <div class="ca-form-group">
             <label for="content">Content</label>
-            <InputTextArea id="content" class="form-control" @bind-Value="Article.Content" />
+            <InputTextArea id="content" class="ca-form-control" @bind-Value="Article.Content" />
         </div>
-        <div class="mb-2">
-            <label for="date-published">Date</label>
-            <InputDate Type="InputDateType.DateTimeLocal" id="date-published" class="form-control" @bind-Value="Article.DatePublished" />
+        <div class="ca-form-group">
+            <label for="date-published" class="ca-form-label">Date</label>
+            <InputDate Type="InputDateType.DateTimeLocal" id="date-published" class="ca-form-control" @bind-Value="Article.DatePublished" />
         </div>
-        <div class="form-check mb-2">
-            <InputCheckbox class="form-check-input" @bind-Value="Article.IsPublished" />
-            <label class="form-check-label">Is Published</label>
+        <div class="ca-form-group d-flex flex-row align-items-center">
+            <div class="d-flex flex-row gap-1">
+                <InputCheckbox class="ca-form-checkbox" @bind-Value="Article.IsPublished" />
+                <label class="ca-form-label">Is Published</label>
+            </div>
+            <button type="submit" class="ca-button ca-primary" style="margin-left: auto;">Submit</button>
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
     </EditForm>
 
     <h3>State Management</h3>
     <form @formname="ArticleDeleteForm" @onsubmit="DeleteArticle" method="post">
-        <button class="btn btn-danger">Delete Article</button>
+        <button class="ca-button ca-danger">Delete Article</button>
         <AntiforgeryToken />
     </form>
 }

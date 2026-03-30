@@ -1,44 +1,35 @@
 ﻿@page "/register"
 @using CleanArchitecture.Application.Users.RegisterUser
 
-<style>
-    .form-box {
-        margin-bottom: 1rem;
-    }
-
-    .form-box label {
-        font-weight: 600;
-    }
-</style>
-
 <PageTitle>Register</PageTitle>
-
 <h3>Create new user</h3>
 
-<EditForm Model="UserModel" OnValidSubmit="HandleSubmit" FormName="RegisterUserForm">
-    <DataAnnotationsValidator />
-    <div>
-      <label for="name">Username</label>
-      <InputText @bind-Value="UserModel.UserName" id="name" />
-      <ValidationMessage For="() => UserModel.UserName" />
-    </div>
-    <div>
-      <label for="email">Email</label>
-      <InputText @bind-Value="UserModel.Email" id="email" />
-      <ValidationMessage For="() => UserModel.Email" />
-    </div>
-    <div>
-      <label for="password">Password</label>
-      <InputText @bind-Value="UserModel.Password" id="password" type="password" />
-      <ValidationMessage For="() => UserModel.Password" />
-    </div>
-    <div>
-      <label for="confirmPassword">Confirm Password</label>
-      <InputText @bind-Value="UserModel.ConfirmPassword" id="confirmPassword" type="password" />
-      <ValidationMessage For="() => UserModel.ConfirmPassword" />
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-</EditForm>
+<div class="ca-box ca-form">
+    <EditForm Model="UserModel" OnValidSubmit="HandleSubmit" FormName="RegisterUserForm">
+        <DataAnnotationsValidator />
+        <div class="ca-form-group">
+          <label class="ca-form-label" for="name">Username</label>
+          <InputText class="ca-form-control" @bind-Value="UserModel.UserName" id="name" />
+          <ValidationMessage For="() => UserModel.UserName" />
+        </div>
+        <div class="ca-form-group">
+          <label class="ca-form-label" for="email">Email</label>
+          <InputText class="ca-form-control" @bind-Value="UserModel.Email" id="email" />
+          <ValidationMessage For="() => UserModel.Email" />
+        </div>
+        <div class="ca-form-group">
+          <label class="ca-form-label" for="password">Password</label>
+          <InputText class="ca-form-control" @bind-Value="UserModel.Password" id="password" type="password" />
+          <ValidationMessage For="() => UserModel.Password" />
+        </div>
+        <div class="ca-form-group">
+          <label class="ca-form-label" for="confirmPassword">Confirm Password</label>
+          <InputText class="ca-form-control" @bind-Value="UserModel.ConfirmPassword" id="confirmPassword" type="password" />
+          <ValidationMessage For="() => UserModel.ConfirmPassword" />
+        </div>
+        <button type="submit" class="ca-button ca-primary">Submit</button>
+    </EditForm>
+</div>
 
 <span class="text-danger">@errors</span>
 

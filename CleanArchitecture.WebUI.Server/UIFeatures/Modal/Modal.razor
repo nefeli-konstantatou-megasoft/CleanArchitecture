@@ -1,32 +1,20 @@
 ﻿@rendermode InteractiveServer
 
-<style>
-    .custom-modal {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: aliceblue;
-        padding: 2rem;
-        border: 1px solid black;
-    }
-</style>
-
 @if(Visible)
 {
-    <div class="custom-modal">
+    <div class="ca-box ca-centered">
         <h2>@Title</h2>
         <hr />
         @ChildContent
         <div class="d-flex flex-row flex-nowrap gap-2">
             @if(ModalSaved.HasDelegate)
             {
-                <button class="btn btn-primary" @onclick="() => ModalSaved.InvokeAsync()">Save</button>
-                <button class="btn btn-secondary" @onclick="CloseModal">Close</button>
+                <button class="ca-button ca-primary" @onclick="() => ModalSaved.InvokeAsync()">Save</button>
+                <button class="ca-button ca-secondary" @onclick="CloseModal">Close</button>
             }
             else
             {
-                <button class="btn btn-primary" @onclick="CloseModal">Close</button>
+                <button class="ca-button ca-primary" @onclick="CloseModal">Close</button>
             }
         </div>
     </div>

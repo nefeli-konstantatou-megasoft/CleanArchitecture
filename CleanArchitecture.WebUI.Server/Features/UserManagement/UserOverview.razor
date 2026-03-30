@@ -11,10 +11,26 @@
         display: grid;
         grid-template-columns: repeat(5, 1fr);
         grid-template-rows: repeat(@(users?.Count ?? 0), 1fr);
+        border: 1px solid black;
+    }
+
+    .user-grid > div {
+        display: flex;
+        align-content: stretch;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
     }
 
     .user-grid-header {
+        display: flex;
+        align-content: flex-end;
+        align-items: flex-end;
+        justify-content: center;
         border-bottom: 1px solid black;
+        width: 100%;
+        height: 100%;
+        background-color: aliceblue;
     }
 </style>
 
@@ -42,7 +58,7 @@ else
             <div>@user.Email</div>
             <div>@user.Id</div>
             <div>@string.Join(", ", user.Roles)</div>
-            <div><button class="btn btn-outline-primary" @onclick="() => OpenModal(user)">Manage roles</button></div>
+            <div><button class="ca-button ca-outline-primary" @onclick="() => OpenModal(user)">Manage roles</button></div>
         }
     </div>
 }
@@ -53,12 +69,12 @@ else
     {
         <div style="display: flex; flex-flow: row nowrap; gap: 1rem; margin-bottom: 1rem; align-content: center;">
             <p>@role</p>
-            <button class="btn btn-outline-danger" @onclick="() => RemoveRole(role)">remove</button>
+            <button class="ca-button ca-outline-danger" @onclick="() => RemoveRole(role)">remove</button>
         </div>
     }
     <div style="display: flex; flex-flow: row nowrap; gap: 1rem; margin-bottom: 5px;">
         <InputText @bind-Value="newRole" DisplayName="Role name" class="margin-bottom: 1rem;" />
-        <button class="btn btn-outline-primary" @onclick="AddRole">add</button>
+        <button class="ca-button ca-outline-primary" @onclick="AddRole">add</button>
     </div>
 </Modal>
 
