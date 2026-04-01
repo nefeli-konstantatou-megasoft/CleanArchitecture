@@ -1,6 +1,6 @@
 ﻿@page "/articles/edit"
 @page "/articles/edit/{ArticleId:int}"
-@attribute [Authorize(Roles = "Writer")]
+@attribute [AuthorizePermissions(RolePermissionFlags.EditOwnArticles)]
 
 @if(isEdit && Article is not null)
 {
@@ -80,7 +80,9 @@ else
     }
 
     private void UpdateErrorMessage(ErrorMessage? message)
-        => errorMessage = message is not null ? $"Got error code {message.Code}: `{message.Body}`" : string.Empty;
+    {
+        errorMessage = message is not null ? message.Body : string.Empty;
+    }
 
     private async Task HandleSubmit()
     {

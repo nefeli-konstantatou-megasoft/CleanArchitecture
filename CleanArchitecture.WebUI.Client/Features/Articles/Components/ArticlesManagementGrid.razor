@@ -1,0 +1,106 @@
+﻿@inject NavigationManager NavigationManager
+@using CleanArchitecture.Application.Abstractions
+@using CleanArchitecture.Application.Articles
+@using CleanArchitecture.Domain.Abstractions
+@using Newtonsoft.Json
+<style>
+    .article-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        grid-template-rows: repeat(@(_articles?.Count ?? 0), 1fr);
+        border: 1px solid black;
+    }
+
+    .article-grid > div {
+        display: flex;
+        align-content: stretch;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+    }
+
+    .article-grid-header {
+        display: flex;
+        align-content: flex-end;
+        align-items: flex-end;
+        justify-content: center;
+        border-bottom: 1px solid black;
+        width: 100%;
+        height: 100%;
+        background-color: aliceblue;
+    }
+</style>
+
+
+@if(_articles is null)
+{
+    <h3>Loading...</h3>
+}
+else if(_articles.Count <= 0)
+{
+    <span>No articles found.</span>
+}
+else
+{
+    <div class="article-grid">
+        <div class="article-grid-header">Id</div>
+        <div class="article-grid-header">Title</div>
+        <div class="article-grid-header">Content</div>
+        <div class="article-grid-header">Published</div> 
+        <div class="article-grid-header">Toggle Publish</div> 
+        <div class="article-grid-header">Edit</div> 
+
+        @foreach(var article in _articles)
+        {
+            <div>@article.Id</div>
+            <div>@article.Title</div>
+            <div><time>@article.Content</time></div>
+            <div>
+                @if(article.IsPublished)
+                {
+                    <time>@article.DatePublished</time>
+                }
+                else
+                {
+                    <em>Unpublished</em>
+                }
+            </div>
+            <div><input type="checkbox" checked="@article.IsPublished" @onchange="@(() => UpdateArticlePublishState(article))" class="ca-form-checkbox" /></div>
+            <div><button class="ca-button ca-outline-primary" @onclick="@(() => NavigationManager.NavigateTo($"/articles/edit/{article.Id}"))">Edit</button></div>
+        }
+    </div>
+}
+
+<span class="text-danger">@Errors</span>
+
+@code {
+    [Parameter, EditorRequired] public Func<ArticleResponse, Task<bool>> ToggleArticlePublish { get; set; }
+    [Parameter, EditorRequired] public Func<Task<Result<List<ArticleResponse>>>> RetrieveArticles { get; set; }
+
+    public string Errors { get; set; } = string.Empty;
+
+    private List<ArticleResponse>? _articles;
+    protected override Task OnInitializedAsync() => UpdateArticles();
+
+    public async Task UpdateArticles()
+    {
+        var result = await RetrieveArticles.Invoke();
+        _articles = result.Value ?? [];
+        Errors = result.Message?.Body ?? string.Empty;
+    }
+
+    private async Task UpdateArticlePublishState(ArticleResponse article)
+    {
+        if (_articles is null) return;
+
+        var result = await ToggleArticlePublish.Invoke(article);
+
+        if(result)
+        {
+            var index = _articles.FindIndex(target => target.Id == article.Id);
+            var newArticle = _articles[index];
+            newArticle.IsPublished = !newArticle.IsPublished;
+            _articles[index] = newArticle;
+        }
+    }
+}

@@ -1,6 +1,5 @@
 ﻿using CleanArchitecture.Domain.Roles;
 using CleanArchitecture.Domain.Users;
-using CleanArchitecture.Infrastructure.Roles;
 using CleanArchitecture.Infrastructure.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
@@ -10,10 +9,12 @@ namespace CleanArchitecture.Infrastructure.Repositories;
 
 public class UserRepository(
     UserManager<User> userManager,
-    ApplicationDbContext dbContext) : IUserRepository
+    IDbContextFactory<ApplicationDbContext> dbContextFactory) : IUserRepository, IAsyncDisposable
 {
-    private readonly ApplicationDbContext _context = dbContext;
+    private readonly ApplicationDbContext _context = dbContextFactory.CreateDbContext();
     private readonly UserManager<User> _userManager = userManager;
+
+    public async ValueTask DisposeAsync() => await _context.DisposeAsync();
 
     public async Task<List<IUser>> GetAllUsersAsync()
         => await _userManager.Users.Select(user => (IUser)user).ToListAsync();

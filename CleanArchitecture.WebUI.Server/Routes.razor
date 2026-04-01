@@ -2,7 +2,7 @@
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(MainLayout)">
             <NotAuthorized>
-                <span class="text-danger-emphasis">You are not authenticated! Login and try again.</span>
+                <span class="text-danger">You are not authorized to perform this action! You either don't have the required permissions to do so or have not logged in.</span>
             </NotAuthorized>
         </AuthorizeRouteView>
         <FocusOnNavigate RouteData="routeData" Selector="h1" />

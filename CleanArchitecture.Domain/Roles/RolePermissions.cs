@@ -12,6 +12,7 @@ public enum RolePermissionFlags : ulong
     PublishAllArticles = 1 << 6,
     ManageRoles = 1 << 7,
     ManageArticles = 1 << 8,
+    ManageUsers = 1 << 9,
 };
 
 public struct RolePermissions
@@ -26,6 +27,8 @@ public struct RolePermissions
         readonly get => (_permissions & otherPermissions._permissions) == otherPermissions._permissions ? All : None;
         set => _permissions = (_permissions & ~otherPermissions) | (otherPermissions & value);
     }
+
+    public override string ToString() => ((long)_permissions).ToString();
 
     public static RolePermissions operator|(RolePermissions first, RolePermissions second) => new RolePermissions(first._permissions | second._permissions);
     public static RolePermissions operator&(RolePermissions first, RolePermissions second) => new RolePermissions(first._permissions & second._permissions);

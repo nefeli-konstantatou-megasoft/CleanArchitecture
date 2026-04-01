@@ -26,6 +26,8 @@
 @using Microsoft.AspNetCore.Authorization
 @using CleanArchitecture.Application.Users
 @using CleanArchitecture.Application.Users.GetUsersQuery
+@using CleanArchitecture.Infrastructure.Authentication.Authorization
+@using CleanArchitecture.Domain.Roles;
 @inject ISender Sender
 @inject NavigationManager NavigationManager;
 @inject UserManager<User> UserManager;

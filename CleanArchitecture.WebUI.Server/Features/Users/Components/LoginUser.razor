@@ -1,5 +1,6 @@
 ﻿@page "/login"
 @using CleanArchitecture.Application.Users.LoginUser
+@inject IHttpContextAccessor HttpContextAccessor
 
 <PageTitle>Login User</PageTitle>
 <h4>Login</h4>
@@ -20,6 +21,8 @@
         <button type="submit" class="ca-button ca-primary">Submit</button>
     </EditForm>
 </div>
+
+<p class="mt-2">Don't have an account? <a href="register">Register here!</a></p>
 
 @code {
     [SupplyParameterFromForm]

@@ -1,5 +1,32 @@
 ﻿@page "/"
+@rendermode InteractiveServer
+@using CleanArchitecture.Application.Articles.GetArticlesByCurrentUser
+@using CleanArchitecture.Application.Articles.UpdateArticlePublish
+@using CleanArchitecture.WebUI.Client.Features.Articles.Components
 
-<PageTitle>Home</PageTitle>
+<AuthorizeView>
+    <Authorized>
+        <PageTitle>My Articles</PageTitle>
+        <h3>My Articles</h3>
 
-Nothing to see here.
+        <ArticlesManagementGrid ToggleArticlePublish="ToggleArticlePublish"
+                                RetrieveArticles="RetrieveArticles" />
+    </Authorized>
+    <NotAuthorized>
+        <h3>Clean Architecture</h3>
+        <span class="fw-bold">Please login to use the service.</span>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    public async Task<Result<List<ArticleResponse>>> RetrieveArticles()
+    {
+        return await Sender.Send(new GetArticlesByCurrentUserQuery());
+    }
+
+    public async Task<bool> ToggleArticlePublish(ArticleResponse article)
+    {
+        var result = await Sender.Send(new UpdateArticlePublishCommand(article.Id, !article.IsPublished));
+        return result.Success;
+    }
+}

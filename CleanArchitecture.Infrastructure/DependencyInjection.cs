@@ -4,6 +4,7 @@ using CleanArchitecture.Domain.Articles;
 using CleanArchitecture.Domain.Roles;
 using CleanArchitecture.Domain.Users;
 using CleanArchitecture.Infrastructure.Authentication;
+using CleanArchitecture.Infrastructure.Authentication.Authorization;
 using CleanArchitecture.Infrastructure.Repositories;
 using CleanArchitecture.Infrastructure.Roles;
 using CleanArchitecture.Infrastructure.Users;
@@ -23,9 +24,10 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
+        services.AddDbContextFactory<ApplicationDbContext>(
+            options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
         );
+        services.AddDbContext<ApplicationDbContext>();
 
         AddAuthentication(services);
 
@@ -45,7 +47,13 @@ public static class DependencyInjection
         services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();
         services.AddCascadingAuthenticationState();
 
-        services.AddAuthorization();
+        services.AddAuthorization(options => {
+            foreach (var permissionPolicy in AuthorizationPolicies.PermissionPolicies)
+                options.AddPolicy(permissionPolicy.Item1, policy => {
+                    policy.RequireClaim(permissionPolicy.Item2.Type, permissionPolicy.Item2.Value);
+                });
+        });
+
         services.AddAuthentication(options =>
         {
             options.DefaultScheme = IdentityConstants.ApplicationScheme;
@@ -57,5 +65,13 @@ public static class DependencyInjection
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddSignInManager()
             .AddDefaultTokenProviders();
+    }
+
+    public static async Task SetupPrimitiveRoles(this IServiceProvider serviceProvider)
+    {
+        var roleRepository = serviceProvider.GetService<IRoleRepository>()!;
+
+        foreach(var coreRole in CoreRoles.Roles)
+            await roleRepository.CreateRoleAsync(coreRole!.Name!, coreRole.Permissions);
     }
 }

@@ -4,9 +4,11 @@ using CleanArchitecture.Domain.Abstractions;
 using CleanArchitecture.Domain.Articles;
 using CleanArchitecture.Domain.Roles;
 using CleanArchitecture.Domain.Users;
+using CleanArchitecture.Infrastructure.Authentication.Authorization;
 using CleanArchitecture.Infrastructure.Roles;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace CleanArchitecture.Infrastructure.Users;
 
@@ -22,6 +24,7 @@ public class UserService(
     private readonly IArticleRepository _articleRepository = articleRepository;
     private readonly RoleManager<Role> _roleManager = roleManager;
     private readonly IUserRepository _userRepository = userRepository;
+    public const string PermissionsClaimType = "permissions";
 
     public async Task<string> GetUserIdAsync()
     {
@@ -44,33 +47,30 @@ public class UserService(
 
     public async Task<bool> UserCanEditArticleAsync(int articleId)
     {
-        (var user, var permissions) = await GetUserWithPermissionsAsync();
+        var permissions = await GetPermissionsAsync();
 
-        if (user is null || permissions is null)
+        if (permissions is null)
             return false;
 
+        else if (permissions.Value[RolePermissionFlags.EditAllArticles])
+            return true;
+
+        var userId = await GetUserIdAsync();
         var article = await _articleRepository.GetArticleByIdAsync(articleId);
 
         if (article is null)
             return false;
 
-        if (article.UserId == user.Id)
+        if (article.UserId == userId)
             return permissions.Value[RolePermissionFlags.EditOwnArticles];
-
-        return permissions.Value[RolePermissionFlags.EditAllArticles];
-    }
-
-    public async Task<bool> UserHasRoleAsync(string role)
-    {
-        var user = await GetUserAsync();
-        return user is not null && await _userManager.IsInRoleAsync(user, role);
+        else return false;
     }
 
     public async Task<bool> UserHasPermissionsAsync(RolePermissions rolePermissions)
     {
-        (var user, var permissions) = await GetUserWithPermissionsAsync();
+        var permissions = await GetPermissionsAsync();
 
-        if (user is null || permissions is null)
+        if (permissions is null)
             return false;
 
         return permissions.Value[rolePermissions];
@@ -142,22 +142,28 @@ public class UserService(
         return user;
     }
 
-    public async Task<(User?, RolePermissions?)> GetUserWithPermissionsAsync()
+    public async Task<RolePermissions?> GetPermissionsAsync()
     {
         var httpContext = _httpContextAccessor.HttpContext;
-
         if (httpContext?.User is null)
-            return (null, null);
+            return null;
 
-        var user = await _userManager.GetUserAsync(httpContext.User);
+        Predicate<Claim> permissionsPredicate = claim =>
+               claim.Type == AuthorizationPolicies.AllPermissionsClaimType
+            && !string.IsNullOrWhiteSpace(claim.Value);
 
-        if (user is null)
-            return (null, null);
+        var hasPermissions = httpContext.User.HasClaim(permissionsPredicate);
 
-        var permissions = await _userRepository.GetUserPermissionsByUserIdAsync(user.Id);
+        if (!hasPermissions)
+            return null;
 
-        if (permissions is null)
-            return (null, null);
-        return (user, permissions);
+        var claim = httpContext.User.FindFirst(permissionsPredicate);
+        if (claim?.Value is null)
+            return null;
+
+        else if (long.TryParse(claim.Value, out var permissionsNumber))
+            return (RolePermissionFlags)permissionsNumber;
+
+        else return null;
     }
 }

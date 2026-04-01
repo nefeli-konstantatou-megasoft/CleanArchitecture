@@ -1,8 +1,8 @@
-﻿@page "/user-overview"
+﻿@page "/users-management"
 @using CleanArchitecture.Application.Users.AddRoleToUser
 @using CleanArchitecture.WebUI.Server.UIFeatures.Modal
-@rendermode InteractiveServer
-@attribute [Authorize(Roles = "Admin")]
+@rendermode @(new InteractiveServerRenderMode(false))
+@attribute [AuthorizePermissions(RolePermissionFlags.ManageUsers)]
 
 <PageTitle>User Overview</PageTitle>
 

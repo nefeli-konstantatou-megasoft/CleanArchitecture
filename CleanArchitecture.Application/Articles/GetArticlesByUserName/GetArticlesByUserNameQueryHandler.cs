@@ -1,15 +1,15 @@
 ﻿using CleanArchitecture.Application.Users;
 
-namespace CleanArchitecture.Application.Articles.GetArticlesByUserId;
+namespace CleanArchitecture.Application.Articles.GetArticlesByUserName;
 
-public class GetArticlesByUserIdQueryHandler(
+public class GetArticlesByUserNameQueryHandler(
     IArticleRepository articleRepository,
-    IUserService userService) : IQueryHandler<GetArticlesByUserIdQuery, List<ArticleResponse>>
+    IUserService userService) : IQueryHandler<GetArticlesByUserNameQuery, List<ArticleResponse>>
 {
     private readonly IArticleRepository _articleRepository = articleRepository;
     private readonly IUserService _userService = userService;
 
-    public async Task<Result<List<ArticleResponse>>> Handle(GetArticlesByUserIdQuery request, CancellationToken cancellationToken)
+    public async Task<Result<List<ArticleResponse>>> Handle(GetArticlesByUserNameQuery request, CancellationToken cancellationToken)
     {
         var articles = await _articleRepository.GetArticlesByUserId(request.UserId);
         return articles.Adapt<List<ArticleResponse>>();

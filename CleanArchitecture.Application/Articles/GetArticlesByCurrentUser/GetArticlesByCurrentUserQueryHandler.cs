@@ -1,6 +1,6 @@
 ﻿using CleanArchitecture.Application.Users;
 
-namespace CleanArchitecture.Application.Articles.GetArticlesByUserId;
+namespace CleanArchitecture.Application.Articles.GetArticlesByCurrentUser;
 
 public class GetArticlesByCurrentUserQueryHandler(
     IArticleRepository articleRepository,

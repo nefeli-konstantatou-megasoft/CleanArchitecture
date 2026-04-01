@@ -5,7 +5,6 @@ namespace CleanArchitecture.Application.Users;
 public interface IUserService
 {
     Task<string> GetUserIdAsync();
-    Task<bool> UserHasRoleAsync(string role);
     Task<bool> UserHasPermissionsAsync(RolePermissions rolePersmissions);
     Task<bool> UserCanCreateArticlesAsync();
     Task<bool> UserCanEditArticleAsync(int articleId);

@@ -2,18 +2,18 @@
 
 namespace CleanArchitecture.Application.Users.LoginUser;
 
-public class LoginUserCommandHandler : ICommandHandler<LoginUserCommand>
+public class LoginUserCommandHandler(
+    IAuthenticationService authenticationService) : ICommandHandler<LoginUserCommand>
 {
-    private readonly IAuthenticationService _authenticationService;
-
-    public LoginUserCommandHandler(IAuthenticationService authenticationService)
-    {
-        _authenticationService = authenticationService;
-    }
+    private readonly IAuthenticationService _authenticationService = authenticationService;
 
     public async Task<Result> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
-        bool success = await _authenticationService.LoginUserAsync(request.UserName, request.Password);
-        return success ? Result.Ok() : Result.Error(UserErrors.InvalidCredentials);
+        var loginResult = await _authenticationService.LoginUserAsync(request.UserName, request.Password);
+
+        if(loginResult is not null)
+            return Result.Error(loginResult);
+
+        return Result.Ok();
     }
 }

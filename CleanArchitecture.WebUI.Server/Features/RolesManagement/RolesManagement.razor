@@ -7,8 +7,8 @@
 @using CleanArchitecture.Application.Users.AddRoleToUser
 @using CleanArchitecture.Domain.Roles
 @using CleanArchitecture.WebUI.Server.UIFeatures.Modal
-@rendermode InteractiveServer
-@attribute [Authorize(Roles = "Admin")]
+@rendermode @(new InteractiveServerRenderMode(false))
+@attribute [AuthorizePermissions(RolePermissionFlags.ManageRoles)]
 
 <PageTitle>Roles Management</PageTitle>
 

@@ -11,7 +11,7 @@ public class GetUsersQueryHandler(
 
     public async Task<Result<List<UserResponse>>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
     {
-        if(!await _userService.UserHasRoleAsync("Admin"))
+        if(!await _userService.UserHasPermissionsAsync(RolePermissionFlags.ManageUsers))
             return Result<List<UserResponse>>.Error(UserErrors.UnauthorizedAction);
 
         var users = await _userRepository.GetAllUsersAsync();

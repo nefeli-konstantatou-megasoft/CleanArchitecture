@@ -1,0 +1,31 @@
+﻿@inject IUserService UserService
+@inject IHttpContextAccessor HttpContextAccessor
+
+<CascadingValue Value="this">
+    @if(_isAuthorized is true)
+    {
+        @Authorized(HttpContextAccessor.HttpContext)
+    }
+    else if(_isAuthorized is false && NotAuthorized is not null)
+    {
+        @NotAuthorized
+    }
+</CascadingValue>
+
+@code {
+    [Parameter, EditorRequired] public RenderFragment<HttpContext?> Authorized { get; set; } = default!;
+    [Parameter, EditorRequired] public List<RolePermissions> AllowedPermissions { get; set; } = default!;
+    [Parameter] public RenderFragment? NotAuthorized { get; set; }
+    private bool? _isAuthorized = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        foreach (var permissions in AllowedPermissions)
+        {
+            if (await UserService.UserHasPermissionsAsync(permissions))
+                _isAuthorized = true;
+        }
+
+        _isAuthorized ??= false;
+    }
+}

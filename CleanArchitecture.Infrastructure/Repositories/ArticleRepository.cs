@@ -36,6 +36,17 @@ public class ArticleRepository : IArticleRepository
         return result;
     }
 
+    public async Task<List<Article>> GetArticlesByUserName(string username)
+    {
+        var result =  await _context.Articles
+            .Include(article => article.Author)
+            .Where(article => string.Equals(article.Author.UserName, username, StringComparison.OrdinalIgnoreCase))
+            .OrderByDescending(article => article.DatePublished)
+            .OrderBy(article => article.IsPublished)
+            .ToListAsync();
+        return result;
+    }
+
     public async Task<Article> CreateArticleAsync(Article article)
     {
         _context.Articles.Add(article);
