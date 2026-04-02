@@ -6,6 +6,7 @@ using CleanArchitecture.Domain.Users;
 using CleanArchitecture.Infrastructure.Authentication;
 using CleanArchitecture.Infrastructure.Authentication.Authorization;
 using CleanArchitecture.Infrastructure.Repositories;
+using CleanArchitecture.Infrastructure.RequestHandling;
 using CleanArchitecture.Infrastructure.Roles;
 using CleanArchitecture.Infrastructure.Users;
 using Microsoft.AspNetCore.Authorization;
@@ -15,6 +16,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace CleanArchitecture.Infrastructure;
 
@@ -36,6 +38,7 @@ public static class DependencyInjection
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUserService, UserService>();
+        services.AddMediator(Assembly.GetAssembly(typeof(Application.Abstractions.RequestHandling.ISender))!);
 
         return services;
     }

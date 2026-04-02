@@ -1,4 +1,5 @@
 ﻿
+using CleanArchitecture.Application.Abstractions.RequestHandling;
 using CleanArchitecture.Application.Articles;
 using CleanArchitecture.Application.Articles.GetArticlesByCurrentUser;
 using CleanArchitecture.Application.Articles.GetArticlesByUserName;
@@ -6,7 +7,6 @@ using CleanArchitecture.Application.Articles.UpdateArticlePublish;
 using CleanArchitecture.Domain.Abstractions;
 using CleanArchitecture.Domain.Roles;
 using CleanArchitecture.Infrastructure.Authentication.Authorization;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CleanArchitecture.WebUI.Client.Features.Articles.Controllers;

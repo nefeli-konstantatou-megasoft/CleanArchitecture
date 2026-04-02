@@ -1,6 +1,7 @@
 ﻿@using static Microsoft.AspNetCore.Components.Web.RenderMode
 @using System.Net.Http
 @using System.Net.Http.Json
+@using CleanArchitecture.Application.Abstractions.RequestHandling
 @using CleanArchitecture.Infrastructure.Authentication
 @using CleanArchitecture.Infrastructure.Users
 @using Microsoft.AspNetCore.Components.Forms
@@ -14,7 +15,6 @@
 @using CleanArchitecture.Domain.Articles
 @using CleanArchitecture.Application.Articles
 @using System.Threading.Tasks
-@using MediatR
 @using CleanArchitecture.Application.Articles.GetArticles
 @using CleanArchitecture.Application.Articles.CreateArticle
 @using Mapster

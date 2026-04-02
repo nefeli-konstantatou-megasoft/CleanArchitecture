@@ -1,26 +1,26 @@
 ﻿@page "/articles"
+@using CleanArchitecture.WebUI.Server.Shared.Authorization
 @attribute [StreamRendering]
 
 <PageTitle>Articles</PageTitle>
 
-
 <div class="d-flex gap-3 align-items-center mb-3">
     <h3>Articles</h3>
 
-    <AuthorizeView Roles="Admin, Writer">
+    <AuthorizeView>
         <Authorized>
-            <a href="/articles/edit" class="ca-button ca-primary">Create new article</a>
-        </Authorized>
-        <NotAuthorized>
-            <AuthorizeView Context="NestedAuthorizedView">
+            <AuthorizePermissionsView Context="innerAuthorizePermissionsContext"
+                                      AllowedPermissions="[RolePermissionFlags.CreateArticles]">
                 <Authorized>
-                    <span class="text-sm">You do not have permissions to create a new article.</span>
+                    <a href="/articles/edit" class="ca-button ca-primary">Create new article</a>
                 </Authorized>
                 <NotAuthorized>
-                    <span class="text-sm">Log in to create a new article.</span>
+                    <span class="text-sm">You do not have permissions to create a new article.</span>
                 </NotAuthorized>
-            </AuthorizeView>
-
+            </AuthorizePermissionsView>
+        </Authorized>
+        <NotAuthorized>
+            <span class="text-sm">Log in to create a new article.</span>
         </NotAuthorized>
     </AuthorizeView>
 </div>
