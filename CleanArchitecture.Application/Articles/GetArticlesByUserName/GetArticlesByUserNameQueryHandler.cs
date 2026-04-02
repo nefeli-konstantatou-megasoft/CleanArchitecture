@@ -11,7 +11,7 @@ public class GetArticlesByUserNameQueryHandler(
 
     public async Task<Result<List<ArticleResponse>>> Handle(GetArticlesByUserNameQuery request, CancellationToken cancellationToken)
     {
-        var articles = await _articleRepository.GetArticlesByUserId(request.UserId);
+        var articles = await _articleRepository.GetArticlesByUserName(request.UserId);
         return articles.Adapt<List<ArticleResponse>>();
     }
 }

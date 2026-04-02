@@ -34,7 +34,7 @@ public class ArticlesController(
         return result.Success? Ok(result) : BadRequest(result);
     }
 
-    [HttpPatch("set-article-publish-state/{articleId}/{isPublished}")]
+    [HttpPatch("set-article-publish-state")]
     [AuthorizePermissions(RolePermissionFlags.ManageArticles)]
     public async Task<ActionResult<Result>> SetArticlePublishState([FromBody] UpdateArticlePublishCommand publishCommand)
     {

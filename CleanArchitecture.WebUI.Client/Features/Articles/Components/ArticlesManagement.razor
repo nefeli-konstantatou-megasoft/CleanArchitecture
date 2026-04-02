@@ -56,7 +56,9 @@
 
     public async Task<bool> ToggleArticlePublish(ArticleResponse article)
     {
-        var result = await Http.GetAsync($"{SetArticlePublishStateEndpoint}/{article.Id}/{!article.IsPublished}");
+        var result = await Http.PatchAsJsonAsync<UpdateArticlePublishCommand>(SetArticlePublishStateEndpoint,
+            new UpdateArticlePublishCommand(article.Id, !article.IsPublished));
+
         return result.IsSuccessStatusCode;
     }
 

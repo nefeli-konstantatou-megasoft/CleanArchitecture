@@ -40,7 +40,7 @@ public class ArticleRepository : IArticleRepository
     {
         var result =  await _context.Articles
             .Include(article => article.Author)
-            .Where(article => string.Equals(article.Author.UserName, username, StringComparison.OrdinalIgnoreCase))
+            .Where(article => article.Author != null ? article.Author.UserName == username.Trim() : false)
             .OrderByDescending(article => article.DatePublished)
             .OrderBy(article => article.IsPublished)
             .ToListAsync();
@@ -83,6 +83,10 @@ public class ArticleRepository : IArticleRepository
             return false;
 
         articleToUpdate.IsPublished = isPublished;
+        articleToUpdate.DateUpdated = DateTime.Now;
+
+        if (isPublished)
+            articleToUpdate.DatePublished = DateTime.Now;
 
         int result = await _context.SaveChangesAsync();
         return result == 0;
